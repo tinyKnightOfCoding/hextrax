@@ -8,6 +8,8 @@ body {
   grid-template-areas: "header header" "main aside" ;
   grid-template-rows: 4rem auto;
   grid-template-columns: auto 20rem;
+  background-color: #0a67a0;
+  overflow: hidden;
 }
 
 main {
