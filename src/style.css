@@ -4,6 +4,22 @@ body {
   padding: 0;
   height: 100vh;
   width: 100%;
+  display: grid;
+  grid-template-areas: "header header" "main aside" ;
+  grid-template-rows: 4rem auto;
+  grid-template-columns: auto 20rem;
+}
+
+main {
+  grid-area: main;
+}
+
+aside {
+  grid-area: aside;
+}
+
+header {
+  grid-area: header;
 }
 
 #app {
