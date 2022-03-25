@@ -1,19 +1,29 @@
 import {Color3, Mesh, Node, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
 import {Direction} from "./Direction";
 import {Track} from "./Track";
+import {City} from "./City";
+
+const CITY_COLOR = Color3.FromHexString("#F09E58")
+
+const DEFAULT_COLOR = Color3.FromHexString("#85BF19")
 
 export class HexagonTile {
 
     private readonly body: Mesh
     private readonly tracks: Track[] = []
 
-    constructor(name: string, diameter: number, scene: Scene, parent: Node) {
-        const redMaterial = new StandardMaterial("red", scene)
-        redMaterial.diffuseColor = Color3.FromHexString("#85bf19")
-        redMaterial.specularColor = Color3.FromHexString("#85bf19")
+    constructor(
+        name: string,
+        diameter: number,
+        scene: Scene,
+        parent: Node,
+        readonly city?: City) {
+        const mat = new StandardMaterial("tile", scene)
+        mat.diffuseColor = mat.specularColor = city ? CITY_COLOR : DEFAULT_COLOR
         this.body = Mesh.CreateCylinder(name, 0.2, diameter, diameter, 6, 1, scene)
-        this.body.material = redMaterial
+        this.body.material = mat
         this.body.parent = parent
+        this.city?.setParent(this.body)
     }
 
     addTrack(from: Direction, to: Direction) {

@@ -2,6 +2,7 @@ import {Node, Scene, TransformNode, Vector3} from "@babylonjs/core";
 import {HexagonTile} from "./HexagonTile";
 import {Direction} from "./Direction";
 import {Track} from "./Track";
+import {City} from "./City";
 
 export class HexagonalGrid {
 
@@ -14,8 +15,8 @@ export class HexagonalGrid {
         this.gridNode = new TransformNode(name, scene)
     }
 
-    createTile(q: number, r: number) {
-        const newTile = new HexagonTile(`tile-${q}-${r}`, this.tileSize, this.gridNode._scene, this.gridNode)
+    createTile(q: number, r: number, city?: City) {
+        const newTile = new HexagonTile(`tile-${q}-${r}`, this.tileSize, this.gridNode._scene, this.gridNode, city)
         newTile.setPosition(this.convert(q, r))
         this.map.set(newTile.name, newTile)
     }

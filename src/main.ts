@@ -4,6 +4,8 @@ import {HexagonalGrid} from "./HexagonalGrid";
 import {Direction} from "./Direction";
 import {RailwayLine} from "./RailwayLine";
 import {Train} from "./Train";
+import {City} from "./City";
+import {AdvancedDynamicTexture} from "@babylonjs/gui";
 
 const app = document.querySelector<HTMLCanvasElement>('#app')!
 
@@ -13,12 +15,21 @@ window.addEventListener("resize", () => engine.resize())
 const scene = new Scene(engine)
 scene.clearColor = Color3.FromHexString("#0a67a0").toColor4(1)
 
+const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI");
+advancedTexture.useInvalidateRectOptimization = false;
+
 const grid = new HexagonalGrid("base-grid", 0.99, scene)
 
 for (let q = -3; q < 4; q++) {
 
     for (let r = -3; r < 4; r++) {
-        grid.createTile(q, r)
+        if(q === 0 && r === 0) {
+            grid.createTile(q, r, new City("Bern", advancedTexture))
+        } else if(q === 1 && r === 2) {
+            grid.createTile(q, r, new City("Thun", advancedTexture))
+        } else {
+            grid.createTile(q, r)
+        }
     }
 }
 
@@ -48,10 +59,9 @@ line2.addWaypoint(-2, 1)
 line2.addWaypoint(-1, 0)
 line2.addWaypoint(-2, -1)
 
+const train = new Train("IC61", line, scene, advancedTexture)
 
-const train = new Train(line, scene)
-
-const train2 = new Train(line2, scene)
+const train2 = new Train("S1", line2, scene, advancedTexture)
 
 const light = new HemisphericLight("sun", Vector3.Up(), scene)
 light.intensity = 0.7
