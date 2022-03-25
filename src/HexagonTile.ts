@@ -22,6 +22,10 @@ export class HexagonTile {
         }
     }
 
+    getTrack(from: Direction, to: Direction) {
+        return this.tracks.find(t => t.equals(from, to))
+    }
+
     setPosition(newPosition: Vector3) {
         this.body.position = newPosition.clone()
     }

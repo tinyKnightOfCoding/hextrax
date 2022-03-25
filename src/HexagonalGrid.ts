@@ -1,6 +1,7 @@
 import {Node, Scene, TransformNode, Vector3} from "@babylonjs/core";
 import {HexagonTile} from "./HexagonTile";
 import {Direction} from "./Direction";
+import {Track} from "./Track";
 
 export class HexagonalGrid {
 
@@ -22,6 +23,11 @@ export class HexagonalGrid {
     addTrack(q: number, r: number, from: Direction, to: Direction) {
         const tile = this.map.get(`tile-${q}-${r}`)
         tile?.addTrack(from, to)
+    }
+
+    getTrack(q: number, r: number, from: Direction, to: Direction): Track | undefined {
+        const tile = this.map.get(`tile-${q}-${r}`)
+        return tile?.getTrack(from, to)
     }
 
     private convert(q: number, r: number): Vector3 {
