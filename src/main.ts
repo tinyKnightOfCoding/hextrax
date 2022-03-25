@@ -27,6 +27,8 @@ grid.addTrack(1, 2, Direction.NORTH_EAST, Direction.WEST)
 grid.addTrack(0, 2, Direction.EAST, Direction.NORTH_WEST)
 grid.addTrack(-1, 1, Direction.SOUTH_EAST, Direction.NORTH_EAST)
 
+
+
 const light = new HemisphericLight("sun", Vector3.Up(), scene)
 light.intensity = 0.7
 
