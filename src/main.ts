@@ -2,11 +2,12 @@ import './style.css'
 import {Simulation} from "./Simulation";
 import {Direction} from "./Direction";
 import {RailwayLine} from "./RailwayLine";
+import {TravelGraph} from "./TravelGraph";
 
 const simulation = new Simulation(document.querySelector<HTMLCanvasElement>('#app')!!);
 
-for(let q = -5; q < 6; q++) {
-    for(let r = -5; r < 6; r++) {
+for (let q = -5; q < 6; q++) {
+    for (let r = -5; r < 6; r++) {
         simulation.createTile(q, r)
     }
 }
@@ -78,5 +79,10 @@ line3.addWaypoint(0, 0, 'Bern')
 simulation.placeTrain("IC1", line)
 simulation.placeTrain("RE", line2)
 simulation.placeTrain("S1", line3)
+
+const travelGraph = new TravelGraph(line, line2, line3)
+console.log(travelGraph.findRoute("Murten", "Solothurn"))
+console.log(travelGraph.findRoute("Murten", "Bern"))
+console.log(travelGraph.findRoute("Murten", "Fribourg"))
 
 simulation.start()
