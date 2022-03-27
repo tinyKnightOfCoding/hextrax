@@ -6,9 +6,8 @@ export class Train {
 
     private readonly body: Mesh
     private remainingWaypoints: Vector3[] = []
-    private velocity: number = 0.35
+    private velocity: number = 0.75
     private distanceTravelledOnCurrentSegment: number = 0
-    private currentDirection: Vector3 = Vector3.Forward()
 
     constructor(
         name: string,
@@ -37,35 +36,39 @@ export class Train {
         nameText.color = "white"
         nameText.fontSize = "18"
         nameText.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-        nameText.alpha  = 1
+        nameText.alpha = 1
         nameTag.addControl(nameText)
-        this.remainingWaypoints = line.waypoints
-        this.reachWaypoint()
+        this.setWaypoints()
     }
 
     update(delta: number) {
         const distanceTravelled = this.velocity * delta / 1000
         this.distanceTravelledOnCurrentSegment += distanceTravelled
         if (this.distanceTravelledOnCurrentSegment > Math.sqrt(3) / 2) {
-            this.reachWaypoint()
             this.distanceTravelledOnCurrentSegment -= Math.sqrt(3) / 2
+            this.reachWaypoint()
             this.body.translate(Vector3.Forward(), this.distanceTravelledOnCurrentSegment)
         } else {
             this.body.translate(Vector3.Forward(), distanceTravelled)
         }
     }
 
-    private reachWaypoint() {
-        const firstWaypoint = this.remainingWaypoints.shift()!!
-        if (this.remainingWaypoints.length === 0) {
-            this.remainingWaypoints = this.line.waypoints
-        }
-        const nextWaypoint = this.remainingWaypoints[0]!!
-        const oldDirection = this.currentDirection
-        this.currentDirection = new Vector3(nextWaypoint.x - firstWaypoint.x, nextWaypoint.y - firstWaypoint.y, nextWaypoint.z - firstWaypoint.z).normalize()
-        const angle = Vector3.GetAngleBetweenVectors(oldDirection, this.currentDirection, Vector3.Up())
-        this.body.position = firstWaypoint
-        this.body.rotate(Vector3.Up(), angle)
+    private setWaypoints() {
+        this.remainingWaypoints = this.line.waypoints
+        this.body.position = this.remainingWaypoints[0]!!.clone()
+        this.calculateDirection()
     }
 
+    private reachWaypoint() {
+        this.remainingWaypoints.shift()
+        if (this.remainingWaypoints.length < 2) {
+            this.setWaypoints()
+        } else {
+            this.calculateDirection()
+        }
+    }
+
+    private calculateDirection() {
+        this.body.lookAt(this.remainingWaypoints[1])
+    }
 }

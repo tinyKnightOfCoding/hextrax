@@ -3,6 +3,9 @@ import {AdvancedDynamicTexture} from "@babylonjs/gui";
 import {Clock} from "./Clock";
 import {HexagonalGrid} from "./HexagonalGrid";
 import {City} from "./City";
+import {Direction} from "./Direction";
+import {Train} from "./Train";
+import {RailwayLine} from "./RailwayLine";
 
 export class Simulation {
 
@@ -11,6 +14,7 @@ export class Simulation {
     private readonly clock: Clock
     private readonly grid: HexagonalGrid
     private readonly ui: AdvancedDynamicTexture
+    private readonly trains: Train[] = []
 
     constructor(element: HTMLCanvasElement) {
         this.engine = new Engine(element, true)
@@ -30,6 +34,7 @@ export class Simulation {
     start() {
         this.engine.runRenderLoop(() => {
             this.clock.passTime(this.engine.getDeltaTime())
+            this.trains.forEach(t => t.update(this.engine.getDeltaTime()))
             this.scene.render()
         })
     }
@@ -42,6 +47,13 @@ export class Simulation {
         this.grid.placeCity(q, r, new City(name, this.ui))
     }
 
+    placeTrack(q: number, r: number, from: Direction, to: Direction) {
+        this.grid.placeTrack(q, r, from, to)
+    }
+
+    placeTrain(name: string, line: RailwayLine) {
+        this.trains.push(new Train(name, line, this.scene, this.ui))
+    }
 
     private createLighting() {
         const light = new HemisphericLight("sun", Vector3.Up(), this.scene)

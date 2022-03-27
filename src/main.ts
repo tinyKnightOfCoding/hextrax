@@ -1,5 +1,7 @@
 import './style.css'
 import {Simulation} from "./Simulation";
+import {Direction} from "./Direction";
+import {RailwayLine} from "./RailwayLine";
 
 const simulation = new Simulation(document.querySelector<HTMLCanvasElement>('#app')!!);
 
@@ -9,42 +11,72 @@ for(let q = -5; q < 6; q++) {
     }
 }
 
+simulation.placeCity(-4, 1, "Murten")
 simulation.placeCity(0, 0, "Bern")
 simulation.placeCity(3, -4, "Solothurn")
-simulation.placeCity(-4, 1, "Murten")
 simulation.placeCity(3, 3, "Thun")
 simulation.placeCity(-2, 4, "Fribourg")
 simulation.placeCity(-2, -2, "Biel")
+
+simulation.placeTrack(-4, 1, Direction.SOUTH_EAST, Direction.NORTH_WEST)
+simulation.placeTrack(-4, 0, Direction.SOUTH_EAST, Direction.NORTH_EAST)
+simulation.placeTrack(-3, -1, Direction.SOUTH_WEST, Direction.NORTH_EAST)
+simulation.placeTrack(-2, -2, Direction.SOUTH_WEST, Direction.NORTH_EAST)
+simulation.placeTrack(-1, -3, Direction.SOUTH_WEST, Direction.NORTH_EAST)
+simulation.placeTrack(0, -4, Direction.SOUTH_WEST, Direction.EAST)
+simulation.placeTrack(1, -4, Direction.WEST, Direction.EAST)
+simulation.placeTrack(2, -4, Direction.WEST, Direction.EAST)
+simulation.placeTrack(3, -4, Direction.WEST, Direction.EAST)
+simulation.placeTrack(3, -4, Direction.NORTH_EAST, Direction.SOUTH_WEST)
+simulation.placeTrack(2, -3, Direction.NORTH_EAST, Direction.SOUTH_WEST)
+simulation.placeTrack(1, -2, Direction.NORTH_EAST, Direction.SOUTH_WEST)
+simulation.placeTrack(0, -1, Direction.NORTH_EAST, Direction.SOUTH_EAST)
+simulation.placeTrack(0, 0, Direction.NORTH_WEST, Direction.SOUTH_EAST)
+simulation.placeTrack(0, 0, Direction.NORTH_WEST, Direction.SOUTH_EAST)
+simulation.placeTrack(0, 1, Direction.NORTH_WEST, Direction.SOUTH_EAST)
+simulation.placeTrack(0, 2, Direction.NORTH_WEST, Direction.SOUTH_WEST)
+simulation.placeTrack(0, 2, Direction.NORTH_WEST, Direction.SOUTH_EAST)
+simulation.placeTrack(-1, 3, Direction.NORTH_EAST, Direction.SOUTH_WEST)
+simulation.placeTrack(-2, 4, Direction.NORTH_EAST, Direction.SOUTH_WEST)
+simulation.placeTrack(0, 3, Direction.NORTH_WEST, Direction.EAST)
+simulation.placeTrack(1, 3, Direction.WEST, Direction.EAST)
+simulation.placeTrack(2, 3, Direction.WEST, Direction.EAST)
+simulation.placeTrack(3, 3, Direction.WEST, Direction.EAST)
+
+const line = new RailwayLine("murten-biel-solothurn")
+line.addWaypoint(-4, 1)
+line.addWaypoint(-4, 0)
+line.addWaypoint(-3, -1)
+line.addWaypoint(-2, -2)
+line.addWaypoint(-1, -3)
+line.addWaypoint(0, -4)
+line.addWaypoint(1, -4)
+line.addWaypoint(2, -4)
+line.addWaypoint(3, -4)
+
+
+const line2 = new RailwayLine("solothurn-bern-thun")
+line2.addWaypoint(3, -4)
+line2.addWaypoint(2, -3)
+line2.addWaypoint(1, -2)
+line2.addWaypoint(0, -1)
+line2.addWaypoint(0, 0)
+line2.addWaypoint(0, 1)
+line2.addWaypoint(0, 2)
+line2.addWaypoint(0, 3)
+line2.addWaypoint(1, 3)
+line2.addWaypoint(2, 3)
+line2.addWaypoint(3, 3)
+
+const line3 = new RailwayLine("fribourg-bern")
+line3.addWaypoint(-2, 4)
+line3.addWaypoint(-1, 3)
+line3.addWaypoint(0, 2)
+line3.addWaypoint(0, 1)
+line3.addWaypoint(0, 0)
+
+simulation.placeTrain("IC1", line)
+simulation.placeTrain("RE", line2)
+simulation.placeTrain("S1", line3)
+
 simulation.start()
-
-//
-// grid.addTrack(0, 0, Direction.SOUTH_WEST, Direction.EAST)
-// grid.addTrack(1, 0, Direction.WEST, Direction.SOUTH_EAST)
-// grid.addTrack(1, 1, Direction.NORTH_WEST, Direction.SOUTH_WEST)
-// grid.addTrack(1, 2, Direction.NORTH_EAST, Direction.WEST)
-// grid.addTrack(0, 2, Direction.EAST, Direction.NORTH_WEST)
-// grid.addTrack(-1, 1, Direction.SOUTH_EAST, Direction.NORTH_EAST)
-//
-// const line = new RailwayLine("green")
-// line.addWaypoint(0, 0)
-// line.addWaypoint(1, 0)
-// line.addWaypoint(1, 1)
-// line.addWaypoint(1, 2)
-// line.addWaypoint(0, 2)
-// line.addWaypoint(-1, 1)
-// line.isRoundtrip = true
-//
-// grid.addTrack(-1, 2, Direction.SOUTH_EAST, Direction.NORTH_WEST)
-// grid.addTrack(-2, 1, Direction.SOUTH_EAST, Direction.NORTH_EAST)
-// grid.addTrack(-1, 0, Direction.SOUTH_WEST, Direction.NORTH_WEST)
-// grid.addTrack(-2, -1, Direction.SOUTH_EAST, Direction.NORTH_WEST)
-// const line2 = new RailwayLine("red")
-// line2.addWaypoint(-1, 2)
-// line2.addWaypoint(-2, 1)
-// line2.addWaypoint(-1, 0)
-// line2.addWaypoint(-2, -1)
-//
-// const train = new Train("IC61", line, scene, advancedTexture)
-//
-// const train2 = new Train("S1", line2, scene, advancedTexture)
-

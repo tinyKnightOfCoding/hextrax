@@ -20,12 +20,11 @@ export class HexagonalGrid {
     }
 
     placeCity(q: number, r: number, city: City) {
-        this.map.get(`tile-${q}-${r}`)!!.placeCity(city)
+        this.map.get(`tile-${q}-${r}`)?.placeCity(city)
     }
 
-    addTrack(q: number, r: number, from: Direction, to: Direction) {
-        const tile = this.map.get(`tile-${q}-${r}`)
-        tile?.addTrack(from, to)
+    placeTrack(q: number, r: number, from: Direction, to: Direction) {
+        this.map.get(`tile-${q}-${r}`)?.addTrack(from, to)
     }
 
     getTrack(q: number, r: number, from: Direction, to: Direction): Track | undefined {
