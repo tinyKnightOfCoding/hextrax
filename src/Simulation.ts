@@ -1,12 +1,15 @@
 import {ArcRotateCamera, Color3, Engine, HemisphericLight, Scene, Vector3} from "@babylonjs/core";
 import {AdvancedDynamicTexture} from "@babylonjs/gui";
 import {Clock} from "./Clock";
+import {HexagonalGrid} from "./HexagonalGrid";
+import {City} from "./City";
 
 export class Simulation {
 
     private readonly engine: Engine
     private readonly scene: Scene
     private readonly clock: Clock
+    private readonly grid: HexagonalGrid
 
     constructor(element: HTMLCanvasElement) {
         this.engine = new Engine(element, true)
@@ -17,9 +20,10 @@ export class Simulation {
         this.createLighting()
         this.createCamera(element)
 
-        const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        advancedTexture.useInvalidateRectOptimization = false;
+        const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI")
+        advancedTexture.useInvalidateRectOptimization = false
         this.clock = new Clock(advancedTexture)
+        this.grid = new HexagonalGrid(this.scene)
     }
 
     start() {
@@ -28,6 +32,11 @@ export class Simulation {
             this.scene.render()
         })
     }
+
+    createTile(q: number, r: number, city?: City) {
+        this.grid.createTile(q, r, city)
+    }
+
 
     private createLighting() {
         const light = new HemisphericLight("sun", Vector3.Up(), this.scene)

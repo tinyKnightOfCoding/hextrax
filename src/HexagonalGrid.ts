@@ -9,14 +9,12 @@ export class HexagonalGrid {
     private readonly gridNode: Node
     private readonly map = new Map<String, HexagonTile>()
 
-    constructor(name: string,
-                private readonly tileSize: number,
-                scene: Scene) {
-        this.gridNode = new TransformNode(name, scene)
+    constructor(scene: Scene) {
+        this.gridNode = new TransformNode("grid-node", scene)
     }
 
     createTile(q: number, r: number, city?: City) {
-        const newTile = new HexagonTile(`tile-${q}-${r}`, this.tileSize, this.gridNode._scene, this.gridNode, city)
+        const newTile = new HexagonTile(`tile-${q}-${r}`, 0.99, this.gridNode._scene, this.gridNode, city)
         newTile.setPosition(this.convert(q, r))
         this.map.set(newTile.name, newTile)
     }
@@ -32,7 +30,7 @@ export class HexagonalGrid {
     }
 
     private convert(q: number, r: number): Vector3 {
-        const z = ((q) + ((r & 1) * 0.5)) * Math.sqrt(3) * 0.5
+        const z = (q + (r / 2)) * Math.sqrt(3) / 2
         const x = r * 0.75
         return new Vector3(x, 0, z)
     }
