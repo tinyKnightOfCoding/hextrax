@@ -1,20 +1,25 @@
 import {Vector3} from "@babylonjs/core";
 
+export interface Waypoint {
+    coordinate: Vector3
+    stopName?: string
+}
+
 export class RailwayLine {
 
     isRoundtrip: boolean = false
-    private readonly _waypoints: Vector3[] = []
+    private readonly _waypoints: Waypoint[] = []
 
     constructor(readonly name: string) {
     }
 
-    addWaypoint(q: number, r: number) {
-        this._waypoints.push(this.convert(q, r))
+    addWaypoint(q: number, r: number, stopName?: string) {
+        this._waypoints.push({coordinate: this.convert(q, r), stopName: stopName})
     }
 
-    get waypoints(): Vector3[] {
-        const copyOfWaypoints = this._waypoints.map(v => v.clone())
-        if(!this.isRoundtrip) {
+    get waypoints(): Waypoint[] {
+        const copyOfWaypoints = this._waypoints.map(v => ({coordinate: v.coordinate.clone(), stopName: v.stopName}))
+        if (!this.isRoundtrip) {
             const reversed = [...copyOfWaypoints]
             reversed.reverse()
             reversed.shift()

@@ -1,13 +1,17 @@
-import {RailwayLine} from "./RailwayLine";
+import {RailwayLine, Waypoint} from "./RailwayLine";
 import {Color3, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
 import {AdvancedDynamicTexture, Control, Rectangle, TextBlock} from "@babylonjs/gui";
+
+type TrainState = 'STOP' | 'TRAVEL'
 
 export class Train {
 
     private readonly body: Mesh
-    private remainingWaypoints: Vector3[] = []
+    private remainingWaypoints: Waypoint[] = []
     private velocity: number = 0.75
     private distanceTravelledOnCurrentSegment: number = 0
+    private state: TrainState = 'TRAVEL'
+    private stopDuration = 0
 
     constructor(
         name: string,
@@ -42,12 +46,22 @@ export class Train {
     }
 
     update(delta: number) {
+        if (this.state === 'STOP') {
+            this.stopDuration += delta
+            if (this.stopDuration > 1000) {
+                this.stopDuration = 0
+                this.state = 'TRAVEL'
+            }
+            return
+        }
         const distanceTravelled = this.velocity * delta / 1000
         this.distanceTravelledOnCurrentSegment += distanceTravelled
         if (this.distanceTravelledOnCurrentSegment > Math.sqrt(3) / 2) {
             this.distanceTravelledOnCurrentSegment -= Math.sqrt(3) / 2
             this.reachWaypoint()
-            this.body.translate(Vector3.Forward(), this.distanceTravelledOnCurrentSegment)
+            if (this.state === 'TRAVEL') {
+                this.body.translate(Vector3.Forward(), this.distanceTravelledOnCurrentSegment)
+            }
         } else {
             this.body.translate(Vector3.Forward(), distanceTravelled)
         }
@@ -55,7 +69,10 @@ export class Train {
 
     private setWaypoints() {
         this.remainingWaypoints = this.line.waypoints
-        this.body.position = this.remainingWaypoints[0]!!.clone()
+        this.body.position = this.remainingWaypoints[0]!!.coordinate.clone()
+        if (this.remainingWaypoints[0]!!.stopName) {
+            this.state = 'STOP'
+        }
         this.calculateDirection()
     }
 
@@ -66,9 +83,12 @@ export class Train {
         } else {
             this.calculateDirection()
         }
+        if (this.remainingWaypoints[0]!!.stopName) {
+            this.state = 'STOP'
+        }
     }
 
     private calculateDirection() {
-        this.body.lookAt(this.remainingWaypoints[1])
+        this.body.lookAt(this.remainingWaypoints[1].coordinate)
     }
 }
