@@ -1,16 +1,16 @@
 import {RailwayLine, Waypoint} from "./RailwayLine";
 
-export interface Neighbour {
+interface Neighbour {
     cityName: string,
     distance: number,
     lineName: string,
     stopIndex: number
 }
 
-export interface Path {
-    pos: string,
-    hops: Neighbour[],
-    distanceTravelled: number
+export interface Segment {
+    lineName: string,
+    stopIndex: number,
+    destination: string
 }
 
 export class TravelGraph {
@@ -29,13 +29,13 @@ export class TravelGraph {
                         cityName: neighbourStop[0].stopName!!,
                         distance: neighbourStop[1] - currentStop[1],
                         lineName: line.name,
-                        stopIndex: currentStop[1]
+                        stopIndex: i
                     })
             }
         }
     }
 
-    findRoute(from: string, to: string): any {
+    findRoute(from: string, to: string): Segment[] {
         const paths: { pos: string, hops: Neighbour[], distanceTravelled: number }[] = []
         const possiblePaths: { pos: string, hops: Neighbour[], distanceTravelled: number }[] = [{
             pos: from,
@@ -63,7 +63,7 @@ export class TravelGraph {
             }
         }
         if (paths.length === 0) {
-            return undefined
+            return []
         }
         let champion = paths.shift()!!
         for (const challenger of paths) {
@@ -71,7 +71,30 @@ export class TravelGraph {
                 champion = challenger
             }
         }
-        return champion
+        return this.toSegments(champion.hops)
+    }
+
+    private toSegments(neighbours: Neighbour[]): Segment[] {
+        const segments: Segment[] = []
+        let currentI = 0
+        for (let i = 0; i < neighbours.length; i++) {
+            const currentNeigh = neighbours[currentI]
+            const neigh = neighbours[i]
+            if (currentNeigh.lineName !== neigh.lineName) {
+                segments.push({
+                    lineName: currentNeigh.lineName,
+                    stopIndex: currentNeigh.stopIndex,
+                    destination: neighbours[i - 1].cityName
+                })
+                currentI = i
+            }
+        }
+        segments.push({
+            lineName: neighbours[currentI].lineName,
+            stopIndex: neighbours[currentI].stopIndex,
+            destination: neighbours[neighbours.length - 1].cityName
+        })
+        return segments
     }
 
     private putNeighbour(cityName: string, neighbour: Neighbour) {

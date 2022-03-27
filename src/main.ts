@@ -3,6 +3,7 @@ import {Simulation} from "./Simulation";
 import {Direction} from "./Direction";
 import {RailwayLine} from "./RailwayLine";
 import {TravelGraph} from "./TravelGraph";
+import {Demand} from "./Demand";
 
 const simulation = new Simulation(document.querySelector<HTMLCanvasElement>('#app')!!);
 
@@ -81,8 +82,10 @@ simulation.placeTrain("RE", line2)
 simulation.placeTrain("S1", line3)
 
 const travelGraph = new TravelGraph(line, line2, line3)
-console.log(travelGraph.findRoute("Murten", "Solothurn"))
-console.log(travelGraph.findRoute("Murten", "Bern"))
-console.log(travelGraph.findRoute("Murten", "Fribourg"))
+simulation.addDemand(new Demand(simulation.cityByName("Murten"), travelGraph.findRoute("Murten", "Thun"), 1500))
+simulation.addDemand(new Demand(simulation.cityByName("Fribourg"), travelGraph.findRoute("Fribourg", "Thun"), 2000))
+simulation.addDemand(new Demand(simulation.cityByName("Bern"), travelGraph.findRoute("Bern", "Biel"), 1000))
+console.log(travelGraph.findRoute("Murten", "Thun"))
+console.log(travelGraph.findRoute("Fribourg", "Thun"))
 
 simulation.start()

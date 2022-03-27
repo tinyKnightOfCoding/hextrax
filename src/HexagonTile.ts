@@ -11,7 +11,7 @@ export class HexagonTile {
     private readonly body: Mesh
     private readonly mat: StandardMaterial
     private readonly tracks: Track[] = []
-    private city?: City
+    private _city?: City
 
     constructor(
         name: string,
@@ -26,9 +26,13 @@ export class HexagonTile {
     }
 
     placeCity(city: City) {
-        this.city = city
+        this._city = city
         this.mat.diffuseColor = this.mat.specularColor = CITY_COLOR
-        this.city.setParent(this.body)
+        this._city.setParent(this.body)
+    }
+
+    get city(): City | undefined {
+        return this._city
     }
 
     addTrack(from: Direction, to: Direction) {

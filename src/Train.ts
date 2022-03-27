@@ -1,6 +1,8 @@
 import {RailwayLine, Waypoint} from "./RailwayLine";
 import {Color3, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
 import {AdvancedDynamicTexture, Control, Rectangle, TextBlock} from "@babylonjs/gui";
+import {Passenger} from "./Passenger";
+import {Simulation} from "./Simulation";
 
 type TrainState = 'STOP' | 'TRAVEL'
 
@@ -12,10 +14,14 @@ export class Train {
     private distanceTravelledOnCurrentSegment: number = 0
     private state: TrainState = 'TRAVEL'
     private stopDuration = 0
+    private passengers: Passenger[] = []
+    private readonly nameText: TextBlock
+    private stopIndex = 0
 
     constructor(
-        name: string,
+        readonly name: string,
         private readonly line: RailwayLine,
+        private readonly simulation: Simulation,
         scene: Scene,
         advancedTexture: AdvancedDynamicTexture
     ) {
@@ -26,7 +32,7 @@ export class Train {
         this.body.material = mat
         const nameTag = new Rectangle()
         advancedTexture.addControl(nameTag)
-        nameTag.width = "50px"
+        nameTag.width = "60px"
         nameTag.height = "30px"
         nameTag.thickness = 2
         nameTag.linkOffsetY = "-30px"
@@ -35,22 +41,29 @@ export class Train {
         nameTag.cornerRadius = 5
         nameTag.background = "black"
         nameTag.linkWithMesh(this.body)
-        const nameText = new TextBlock()
-        nameText.text = name
-        nameText.color = "white"
-        nameText.fontSize = "18"
-        nameText.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-        nameText.alpha = 1
-        nameTag.addControl(nameText)
+        this.nameText = new TextBlock()
+        this.nameText.text = `${this.name} (${this.passengers.length})`
+        this.nameText.color = "white"
+        this.nameText.fontSize = "18"
+        this.nameText.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        this.nameText.alpha = 1
+        nameTag.addControl(this.nameText)
         this.setWaypoints()
     }
 
     update(delta: number) {
         if (this.state === 'STOP') {
+            if (this.stopDuration === 0) {
+                this.deboardPassengers()
+                this.nameText.text = `${this.name} (${this.passengers.length})`
+            }
             this.stopDuration += delta
             if (this.stopDuration > 1000) {
                 this.stopDuration = 0
+                this.boardPassengers()
+                this.nameText.text = `${this.name} (${this.passengers.length})`
                 this.state = 'TRAVEL'
+                this.stopIndex++
             }
             return
         }
@@ -67,8 +80,23 @@ export class Train {
         }
     }
 
+    private deboardPassengers() {
+        const city = this.simulation.cityByName(this.remainingWaypoints[0]!!.stopName!!)
+        const remainingPassengers = this.passengers.filter(p => !p.wantsDeboard(city))
+        const leavingPassengers = this.passengers.filter(p => p.wantsDeboard(city))
+        this.passengers = remainingPassengers
+        leavingPassengers.forEach(p => p.deboard())
+        city.addPassengers(...leavingPassengers)
+    }
+
+    private boardPassengers() {
+        const city = this.simulation.cityByName(this.remainingWaypoints[0]!!.stopName!!)
+        this.passengers.push(...city.getAndRemovePassengers(this.line.name, this.stopIndex))
+    }
+
     private setWaypoints() {
         this.remainingWaypoints = this.line.waypoints
+        this.stopIndex = 0
         this.body.position = this.remainingWaypoints[0]!!.coordinate.clone()
         if (this.remainingWaypoints[0]!!.stopName) {
             this.state = 'STOP'
