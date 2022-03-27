@@ -13,10 +13,14 @@ export class HexagonalGrid {
         this.gridNode = new TransformNode("grid-node", scene)
     }
 
-    createTile(q: number, r: number, city?: City) {
-        const newTile = new HexagonTile(`tile-${q}-${r}`, 0.99, this.gridNode._scene, this.gridNode, city)
+    createTile(q: number, r: number) {
+        const newTile = new HexagonTile(`tile-${q}-${r}`, 0.99, this.gridNode._scene, this.gridNode)
         newTile.setPosition(this.convert(q, r))
         this.map.set(newTile.name, newTile)
+    }
+
+    placeCity(q: number, r: number, city: City) {
+        this.map.get(`tile-${q}-${r}`)!!.placeCity(city)
     }
 
     addTrack(q: number, r: number, from: Direction, to: Direction) {

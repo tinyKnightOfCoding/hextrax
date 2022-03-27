@@ -10,6 +10,7 @@ export class Simulation {
     private readonly scene: Scene
     private readonly clock: Clock
     private readonly grid: HexagonalGrid
+    private readonly ui: AdvancedDynamicTexture
 
     constructor(element: HTMLCanvasElement) {
         this.engine = new Engine(element, true)
@@ -20,9 +21,9 @@ export class Simulation {
         this.createLighting()
         this.createCamera(element)
 
-        const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI")
-        advancedTexture.useInvalidateRectOptimization = false
-        this.clock = new Clock(advancedTexture)
+        this.ui = AdvancedDynamicTexture.CreateFullscreenUI("UI")
+        this.ui.useInvalidateRectOptimization = false
+        this.clock = new Clock(this.ui)
         this.grid = new HexagonalGrid(this.scene)
     }
 
@@ -33,8 +34,12 @@ export class Simulation {
         })
     }
 
-    createTile(q: number, r: number, city?: City) {
-        this.grid.createTile(q, r, city)
+    createTile(q: number, r: number) {
+        this.grid.createTile(q, r)
+    }
+
+    placeCity(q: number, r: number, name: string) {
+        this.grid.placeCity(q, r, new City(name, this.ui))
     }
 
 

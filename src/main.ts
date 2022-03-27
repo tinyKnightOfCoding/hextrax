@@ -3,11 +3,18 @@ import {Simulation} from "./Simulation";
 
 const simulation = new Simulation(document.querySelector<HTMLCanvasElement>('#app')!!);
 
-for(let q = -3; q < 4; q++) {
-    for(let r = -3; r < 4; r++) {
+for(let q = -5; q < 6; q++) {
+    for(let r = -5; r < 6; r++) {
         simulation.createTile(q, r)
     }
 }
+
+simulation.placeCity(0, 0, "Bern")
+simulation.placeCity(3, -4, "Solothurn")
+simulation.placeCity(-4, 1, "Murten")
+simulation.placeCity(3, 3, "Thun")
+simulation.placeCity(-2, 4, "Fribourg")
+simulation.placeCity(-2, -2, "Biel")
 simulation.start()
 
 //
