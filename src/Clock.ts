@@ -36,7 +36,6 @@ export class Clock {
             this.hours -= 24
         }
         if(this.days > 7) {
-            console.log("week passed")
             this.days -= 7
             this.weeks++
         }
