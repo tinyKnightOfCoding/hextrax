@@ -1,4 +1,4 @@
-import {Node, Scene, TransformNode, Vector3} from "@babylonjs/core";
+import {ActionManager, Node, Scene, TransformNode, Vector3} from "@babylonjs/core";
 import {HexagonTile} from "./HexagonTile";
 import {Direction} from "./Direction";
 import {City} from "./City";
@@ -8,14 +8,26 @@ export class HexagonalGrid {
     private readonly gridNode: Node
     private readonly map = new Map<String, HexagonTile>()
 
-    constructor(scene: Scene) {
+    constructor(scene: Scene,
+                private readonly tileActionManager: ActionManager) {
         this.gridNode = new TransformNode("grid-node", scene)
     }
 
     createTile(q: number, r: number) {
-        const newTile = new HexagonTile(`tile-${q}-${r}`, 0.99, this.gridNode._scene, this.gridNode)
+        const newTile = new HexagonTile(
+            `tile-${q}-${r}`,
+            0.99,
+            this.gridNode._scene,
+            this.gridNode,
+            this.tileActionManager
+        )
         newTile.setPosition(this.convert(q, r))
         this.map.set(newTile.name, newTile)
+    }
+
+
+    tileByName(name: string): HexagonTile {
+        return this.map.get(name)!!
     }
 
     placeCity(q: number, r: number, city: City) {
@@ -27,8 +39,8 @@ export class HexagonalGrid {
     }
 
     cityByName(name: string): City {
-        for(const tile of this.map.values()) {
-            if(tile?.city?.name === name) {
+        for (const tile of this.map.values()) {
+            if (tile?.city?.name === name) {
                 return tile.city
             }
         }

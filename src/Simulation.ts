@@ -1,4 +1,14 @@
-import {ArcRotateCamera, Color3, Engine, HemisphericLight, Scene, Vector3} from "@babylonjs/core";
+import {
+    ActionManager,
+    ArcRotateCamera,
+    Color3,
+    Engine, ExecuteCodeAction,
+    HemisphericLight,
+    KeyboardEventTypes,
+    KeyboardInfo, PointerEventTypes, PointerInfo,
+    Scene,
+    Vector3
+} from "@babylonjs/core";
 import {AdvancedDynamicTexture, Control, TextBlock} from "@babylonjs/gui";
 import {Clock} from "./Clock";
 import {HexagonalGrid} from "./HexagonalGrid";
@@ -7,6 +17,7 @@ import {Direction} from "./Direction";
 import {Train} from "./Train";
 import {RailwayLine} from "./RailwayLine";
 import {Demand} from "./Demand";
+import {EditState, IdleEditState, TrackEditState} from "./EditState";
 
 export class Simulation {
 
@@ -19,6 +30,8 @@ export class Simulation {
     private readonly passengerCountText: TextBlock
     private readonly trains: Train[] = []
     private readonly demands: Demand[] = []
+    private readonly tileActionManager: ActionManager
+    private editState: EditState = IdleEditState.INSTANCE
 
     constructor(element: HTMLCanvasElement) {
         this.engine = new Engine(element, true)
@@ -26,13 +39,31 @@ export class Simulation {
 
         this.scene = new Scene(this.engine)
         this.scene.clearColor = Color3.FromHexString("#0a67a0").toColor4(1)
+        this.scene.onKeyboardObservable.add((i) => this.onKeyboardEvent(i))
+        this.scene.onPointerObservable.add((i) => this.onPointerEvent(i))
+        this.tileActionManager = new ActionManager(this.scene)
         this.createLighting()
         this.createCamera(element)
 
         this.ui = AdvancedDynamicTexture.CreateFullscreenUI("UI")
         this.ui.useInvalidateRectOptimization = false
         this.clock = new Clock(this.ui)
-        this.grid = new HexagonalGrid(this.scene)
+        this.grid = new HexagonalGrid(this.scene, this.tileActionManager)
+        this.scene.hoverCursor = 'default'
+        this.tileActionManager.registerAction(
+            new ExecuteCodeAction({trigger: ActionManager.OnPointerOverTrigger}, (e) =>
+                this.editState.enterTile(this.grid.tileByName(e.meshUnderPointer?.name!!))
+            ))
+        this.tileActionManager.registerAction(
+            new ExecuteCodeAction({trigger: ActionManager.OnPointerOutTrigger}, (e) =>
+                this.editState.leaveTile(this.grid.tileByName(e.meshUnderPointer?.name!!))
+            ))
+        this.tileActionManager.registerAction(
+            new ExecuteCodeAction({trigger: ActionManager.OnPickTrigger}, (e) => {
+                    if (e.sourceEvent.button === 0)
+                        this.editState.pickTile(this.grid.tileByName(e.meshUnderPointer?.name!!))
+                }
+            ))
 
         this.passengerCountText = new TextBlock()
         this.passengerCountText.text = `passengers transported: ${this.passengerCount}`
@@ -45,6 +76,30 @@ export class Simulation {
         this.passengerCountText.left = "8px"
         this.passengerCountText.resizeToFit = true
         this.ui.addControl(this.passengerCountText)
+    }
+
+    private onKeyboardEvent(keyboardInfo: KeyboardInfo) {
+        switch (keyboardInfo.type) {
+            case KeyboardEventTypes.KEYUP:
+                switch (keyboardInfo.event.code) {
+                    case "KeyT":
+                        console.log("T pressed")
+                        this.editState.beforeStateChange()
+                        this.editState = this.editState.type === 'TRACK'
+                            ? IdleEditState.INSTANCE
+                            : new TrackEditState(this.scene)
+                }
+        }
+    }
+
+    private onPointerEvent(pointerInfo: PointerInfo) {
+        switch (pointerInfo.type) {
+            case PointerEventTypes.POINTERTAP:
+                if ((pointerInfo.event as PointerEvent).button) {
+                    this.editState.rightClick()
+                }
+                break
+        }
     }
 
     start() {
