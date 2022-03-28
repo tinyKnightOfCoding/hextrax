@@ -76,10 +76,6 @@ export class Simulation {
         this.demands.push(demand)
     }
 
-    cityAt(q: number, r: number): City {
-        return this.grid.cityAt(q, r)
-    }
-
     cityByName(name: string): City {
         return this.grid.cityByName(name)
     }

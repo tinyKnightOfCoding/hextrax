@@ -12,7 +12,7 @@ export class City {
     constructor(readonly name: string, private readonly simulation: Simulation, ui: AdvancedDynamicTexture) {
         this.nameBox = new Rectangle()
         ui.addControl(this.nameBox)
-        this.nameBox.width = "100px"
+        this.nameBox.width = "120px"
         this.nameBox.height = "30px"
         this.nameBox.thickness = 2
         this.nameBox.linkOffsetY = "-30px"

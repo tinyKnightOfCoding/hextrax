@@ -32,7 +32,7 @@ export class Train {
         this.body.material = mat
         const nameTag = new Rectangle()
         advancedTexture.addControl(nameTag)
-        nameTag.width = "60px"
+        nameTag.width = "80px"
         nameTag.height = "30px"
         nameTag.thickness = 2
         nameTag.linkOffsetY = "-30px"

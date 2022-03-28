@@ -26,10 +26,6 @@ export class HexagonalGrid {
         this.map.get(`tile-${q}-${r}`)?.addTrack(from, to)
     }
 
-    cityAt(q: number, r: number): City {
-        return this.map.get(`tile-${q}-${r}`)!!.city!!
-    }
-
     cityByName(name: string): City {
         for(const tile of this.map.values()) {
             if(tile?.city?.name === name) {
