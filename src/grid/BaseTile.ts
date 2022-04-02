@@ -13,7 +13,22 @@ export abstract class BaseTile implements HexagonTile {
         this.body.position = newPosition.clone()
     }
 
-    addTrack(from: Direction, to: Direction) {
-        this.tracks.push(new Track(from, to, this.body._scene, this.body))
+    addTrack(from: Direction, to: Direction): Track | undefined {
+        if (this.tracks.some(t => t.equals(from, to))) return undefined
+        const newTrack = new Track(from, to, this.body._scene, this.body);
+        this.tracks.push(newTrack)
+        return newTrack
+    }
+
+    removeTrack(from: Direction, to: Direction): Track | undefined {
+        const indexOfTrack = this.tracks.findIndex(t => t.equals(from, to))
+        if (indexOfTrack === -1) {
+            return undefined
+        }
+        return this.tracks.splice(indexOfTrack)[0]
+    }
+
+    tracksByDirection(d: Direction): Track[] {
+        return this.tracks.filter(t => t.hasDirection(d))
     }
 }

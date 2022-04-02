@@ -29,13 +29,25 @@ export class HexagonGrid {
         this.map.set(newTile.name, newTile)
     }
 
+    placeTrack(q: number, r: number, from: Direction, to: Direction) {
+        const newTrack = this.findTile(q, r)?.addTrack(from, to);
+        if (!newTrack) {
+            return
+        }
+        this.findNeighbourTile(q, r, from)?.tracksByDirection(from.opposite)?.forEach(t => t.addNeighbour(newTrack))
+        this.findNeighbourTile(q, r, to)?.tracksByDirection(to.opposite)?.forEach(t => t.addNeighbour(newTrack))
+    }
+
+    private findNeighbourTile(q: number, r: number, direction: Direction): HexagonTile | undefined {
+        return this.findTile(q + direction.qDiff, r + direction.rDiff)
+    }
+
+    private findTile(q: number, r: number): HexagonTile | undefined {
+        return this.map.get(`tile-${q}-${r}`)
+    }
 
     tileByName(name: string): HexagonTile {
         return this.map.get(name)!!
-    }
-
-    placeTrack(q: number, r: number, from: Direction, to: Direction) {
-        this.map.get(`tile-${q}-${r}`)?.addTrack(from, to)
     }
 
     cityByName(name: string): City {

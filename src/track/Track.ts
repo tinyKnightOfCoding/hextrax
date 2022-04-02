@@ -6,6 +6,7 @@ import {TrackObjectOptions} from "./TrackObjectOptions";
 export class Track {
 
     private readonly object: TrackObject
+    private readonly neighbours: Track[] = []
 
     constructor(private readonly from: Direction,
                 private readonly to: Direction,
@@ -18,6 +19,14 @@ export class Track {
 
     equals(from: Direction, to: Direction): boolean {
         return (this.from === from && this.to === to) || (this.from === to && this.to === from)
+    }
+
+    hasDirection(d: Direction): boolean {
+        return this.from === d || this.to === d
+    }
+
+    addNeighbour(neighbour: Track) {
+        this.neighbours.push(neighbour)
     }
 
     dispose() {
