@@ -1,4 +1,4 @@
-import {Direction} from "./Direction";
+import {Direction} from "../Direction";
 import {Color3, Mesh, MeshBuilder, Node, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
 
 export class Track {

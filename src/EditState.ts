@@ -1,5 +1,5 @@
 import {HexagonTile} from "./grid";
-import {Track} from "./Track";
+import {Track} from "./track";
 import {Direction} from "./Direction";
 import {Color3, Scene} from "@babylonjs/core";
 
