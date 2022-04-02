@@ -119,7 +119,7 @@ export class Simulation {
     }
 
     placeCity(q: number, r: number, name: string) {
-        this.grid.placeCity(q, r, new City(name, this, this.ui))
+        this.grid.createCityTile(q, r, new City(name, this, this.ui))
     }
 
     placeTrack(q: number, r: number, from: Direction, to: Direction) {

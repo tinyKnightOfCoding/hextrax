@@ -2,6 +2,8 @@ import {ActionManager, Node, Scene, TransformNode, Vector3} from "@babylonjs/cor
 import {HexagonTile} from "./HexagonTile";
 import {Direction} from "../Direction";
 import {City} from "../City";
+import {PlaneTile} from "./PlaneTile";
+import {StationTile} from "./StationTile";
 
 export class HexagonGrid {
 
@@ -14,13 +16,15 @@ export class HexagonGrid {
     }
 
     createTile(q: number, r: number) {
-        const newTile = new HexagonTile(
-            `tile-${q}-${r}`,
-            0.99,
-            this.gridNode._scene,
-            this.gridNode,
-            this.tileActionManager
-        )
+        if (this.map.has(`tile-${q}-${r}`)) return
+        const newTile = new PlaneTile(`tile-${q}-${r}`, this.gridNode._scene, this.gridNode, this.tileActionManager)
+        newTile.setPosition(this.convert(q, r))
+        this.map.set(newTile.name, newTile)
+    }
+
+    createCityTile(q: number, r: number, city: City) {
+        if (this.map.has(`tile-${q}-${r}`)) return
+        const newTile = new StationTile(`tile-${q}-${r}`, this.gridNode._scene, this.gridNode, this.tileActionManager, city)
         newTile.setPosition(this.convert(q, r))
         this.map.set(newTile.name, newTile)
     }
@@ -28,10 +32,6 @@ export class HexagonGrid {
 
     tileByName(name: string): HexagonTile {
         return this.map.get(name)!!
-    }
-
-    placeCity(q: number, r: number, city: City) {
-        this.map.get(`tile-${q}-${r}`)?.placeCity(city)
     }
 
     placeTrack(q: number, r: number, from: Direction, to: Direction) {
