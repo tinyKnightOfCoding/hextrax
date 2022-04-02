@@ -2,16 +2,19 @@ import {
     ActionManager,
     ArcRotateCamera,
     Color3,
-    Engine, ExecuteCodeAction,
+    Engine,
+    ExecuteCodeAction,
     HemisphericLight,
     KeyboardEventTypes,
-    KeyboardInfo, PointerEventTypes, PointerInfo,
+    KeyboardInfo,
+    PointerEventTypes,
+    PointerInfo,
     Scene,
     Vector3
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Control, TextBlock} from "@babylonjs/gui";
 import {Clock} from "./Clock";
-import {HexagonalGrid} from "./HexagonalGrid";
+import {HexagonalGrid} from "./grid";
 import {City} from "./City";
 import {Direction} from "./Direction";
 import {Train} from "./Train";

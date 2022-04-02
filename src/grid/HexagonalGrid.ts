@@ -1,7 +1,7 @@
 import {ActionManager, Node, Scene, TransformNode, Vector3} from "@babylonjs/core";
 import {HexagonTile} from "./HexagonTile";
-import {Direction} from "./Direction";
-import {City} from "./City";
+import {Direction} from "../Direction";
+import {City} from "../City";
 
 export class HexagonalGrid {
 

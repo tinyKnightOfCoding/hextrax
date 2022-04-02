@@ -1,7 +1,7 @@
 import {ActionManager, Color3, Mesh, Node, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
-import {Direction} from "./Direction";
-import {Track} from "./Track";
-import {City} from "./City";
+import {Direction} from "../Direction";
+import {Track} from "../Track";
+import {City} from "../City";
 
 const CITY_COLOR = Color3.FromHexString("#F09E58")
 const DEFAULT_COLOR = Color3.FromHexString("#85BF19")

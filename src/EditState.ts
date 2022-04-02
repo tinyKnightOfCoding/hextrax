@@ -1,4 +1,4 @@
-import {HexagonTile} from "./HexagonTile";
+import {HexagonTile} from "./grid";
 import {Track} from "./Track";
 import {Direction} from "./Direction";
 import {Color3, Scene} from "@babylonjs/core";
@@ -103,7 +103,7 @@ export class TrackEditState implements EditState {
 
     rightClick() {
         this.currentOrientationIndex++
-        if(this.currentOrientationIndex >= this.orientations.length) {
+        if (this.currentOrientationIndex >= this.orientations.length) {
             this.currentOrientationIndex -= this.orientations.length
         }
         this.currentTrack?.dispose()
