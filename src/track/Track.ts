@@ -3,8 +3,8 @@ import {Color3, Mesh, MeshBuilder, Node, Scene, StandardMaterial, Vector3} from 
 
 export class Track {
 
-    private fromHalf: Mesh;
-    private toHalf: Mesh;
+    private fromHalf: Mesh
+    private toHalf: Mesh
 
     constructor(private readonly from: Direction,
                 private readonly to: Direction,
