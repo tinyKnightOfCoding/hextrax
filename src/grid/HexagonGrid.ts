@@ -1,9 +1,10 @@
-import {ActionManager, Node, Scene, TransformNode, Vector3} from "@babylonjs/core";
+import {AbstractMesh, ActionManager, Node, Scene, TransformNode, Vector3} from "@babylonjs/core";
 import {HexagonTile} from "./HexagonTile";
 import {Direction} from "../Direction";
 import {City} from "../City";
 import {PlaneTile} from "./PlaneTile";
 import {StationTile} from "./StationTile";
+import {Track} from "../track";
 
 export class HexagonGrid {
 
@@ -11,31 +12,52 @@ export class HexagonGrid {
     private readonly map = new Map<String, HexagonTile>()
 
     constructor(scene: Scene,
-                private readonly tileActionManager: ActionManager) {
+                private readonly tileActionManager: ActionManager,
+                private readonly trackActionManager: ActionManager,
+    ) {
         this.gridNode = new TransformNode("grid-node", scene)
     }
 
     createTile(q: number, r: number) {
         if (this.map.has(`tile-${q}-${r}`)) return
-        const newTile = new PlaneTile(`tile-${q}-${r}`, this.gridNode._scene, this.gridNode, this.tileActionManager)
+        const newTile = new PlaneTile(q, r, this.gridNode._scene, this.gridNode, this.tileActionManager)
         newTile.setPosition(this.convert(q, r))
         this.map.set(newTile.name, newTile)
     }
 
-    createCityTile(q: number, r: number, city: City) {
+    createCityTile(q: number, r: number, city: City, from: Direction, to: Direction) {
         if (this.map.has(`tile-${q}-${r}`)) return
-        const newTile = new StationTile(`tile-${q}-${r}`, this.gridNode._scene, this.gridNode, this.tileActionManager, city)
+        const newTile = new StationTile(q, r, this.gridNode._scene, this.gridNode, this.tileActionManager, city)
         newTile.setPosition(this.convert(q, r))
         this.map.set(newTile.name, newTile)
+        this.placeTrack(q, r, from, to, false)
     }
 
-    placeTrack(q: number, r: number, from: Direction, to: Direction) {
-        const newTrack = this.findTile(q, r)?.addTrack(from, to);
+    placeTrack(q: number, r: number, from: Direction, to: Direction, isRemovable?: boolean) {
+        const newTrack = this.findTile(q, r)?.addTrack(from, to, this.trackActionManager, isRemovable);
         if (!newTrack) {
             return
         }
         this.findNeighbourTile(q, r, from)?.tracksByDirection(from.opposite)?.forEach(t => t.addNeighbour(newTrack))
         this.findNeighbourTile(q, r, to)?.tracksByDirection(to.opposite)?.forEach(t => t.addNeighbour(newTrack))
+    }
+
+    removeTrack(track: Track) {
+        const tile = this.tileByName(track.parent.name)
+        tile.removeTrack(track)
+        this.findNeighbourTile(tile.q, tile.r, track.from)?.tracksByDirection(track.from.opposite)?.forEach(t => t.removeNeighbour(track))
+        this.findNeighbourTile(tile.q, tile.r, track.to)?.tracksByDirection(track.to.opposite)?.forEach(t => t.removeNeighbour(track))
+        track.dispose()
+    }
+
+    trackByMesh(mesh: AbstractMesh): Track {
+        for (const tile of this.map.values()) {
+            const track = tile.trackByMesh(mesh)
+            if (track) {
+                return track
+            }
+        }
+        throw new Error(`track not found ${mesh.name}`)
     }
 
     private findNeighbourTile(q: number, r: number, direction: Direction): HexagonTile | undefined {

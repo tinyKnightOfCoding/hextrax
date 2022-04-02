@@ -1,5 +1,5 @@
-import {HexagonTile} from "./grid";
-import {Track} from "./track";
+import {HexagonGrid, HexagonTile} from "./grid";
+import {Track, TrackObject} from "./track";
 import {Direction} from "./Direction";
 import {Color3, Scene} from "@babylonjs/core";
 
@@ -13,6 +13,8 @@ export interface EditState {
     leaveTile(tile: HexagonTile): void
 
     pickTile(tile: HexagonTile): void
+
+    pickTrack(track: Track): void
 
     beforeStateChange(): void
 
@@ -30,13 +32,16 @@ export class IdleEditState implements EditState {
         return 'IDLE'
     }
 
-    enterTile(tile: HexagonTile) {
+    enterTile(_tile: HexagonTile) {
     }
 
-    leaveTile(tile: HexagonTile) {
+    leaveTile(_tile: HexagonTile) {
     }
 
-    pickTile(tile: HexagonTile) {
+    pickTile(_tile: HexagonTile) {
+    }
+
+    pickTrack(_track: Track): void {
     }
 
     beforeStateChange() {
@@ -48,7 +53,7 @@ export class IdleEditState implements EditState {
 
 export class TrackEditState implements EditState {
 
-    private currentTrack?: Track
+    private currentTrack?: TrackObject
     private orientations: [Direction, Direction][] = [
         [Direction.EAST, Direction.WEST],
         [Direction.SOUTH_WEST, Direction.NORTH_EAST],
@@ -63,7 +68,7 @@ export class TrackEditState implements EditState {
     private currentTile?: HexagonTile
     private currentOrientationIndex = 0
 
-    constructor(private readonly scene: Scene) {
+    constructor(private readonly scene: Scene, private readonly grid: HexagonGrid) {
     }
 
     private get currentOrientation(): [Direction, Direction] {
@@ -75,8 +80,12 @@ export class TrackEditState implements EditState {
     }
 
     enterTile(tile: HexagonTile) {
+        if (!tile.isEditable) {
+            return
+        }
         this.currentTile = tile
-        this.currentTrack = new Track(
+        this.currentTrack?.dispose()
+        this.currentTrack = new TrackObject(
             this.currentOrientation[0],
             this.currentOrientation[1],
             this.scene,
@@ -85,7 +94,7 @@ export class TrackEditState implements EditState {
         )
     }
 
-    leaveTile(tile: HexagonTile) {
+    leaveTile(_tile: HexagonTile) {
         this.currentTrack?.dispose()
         this.currentTile = undefined
     }
@@ -95,7 +104,15 @@ export class TrackEditState implements EditState {
     }
 
     pickTile(tile: HexagonTile) {
-        tile.addTrack(this.currentOrientation[0], this.currentOrientation[1])
+        if (tile.isEditable) {
+            this.grid.placeTrack(tile.q, tile.r, this.currentOrientation[0], this.currentOrientation[1])
+        }
+    }
+
+    pickTrack(track: Track) {
+        if (track.isRemovable) {
+            this.grid.removeTrack(track)
+        }
     }
 
     rightClick() {
@@ -105,7 +122,7 @@ export class TrackEditState implements EditState {
         }
         this.currentTrack?.dispose()
         if (this.currentTile)
-            this.currentTrack = new Track(
+            this.currentTrack = new TrackObject(
                 this.currentOrientation[0],
                 this.currentOrientation[1],
                 this.scene,

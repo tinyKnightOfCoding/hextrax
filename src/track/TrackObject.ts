@@ -1,4 +1,4 @@
-import {Mesh, MeshBuilder, Node, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
+import {AbstractMesh, Mesh, MeshBuilder, Node, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
 import {Direction} from "../Direction";
 import {defaultTrackObjectOptions, TrackObjectOptions} from "./TrackObjectOptions";
 
@@ -30,6 +30,14 @@ export class TrackObject {
         this.toHalf.translate(Vector3.Up(), 0.105)
         this.toHalf.translate(to.direction, Math.sqrt(3) / 8)
         this.toHalf.rotation = to.rotation
+        if(options.actionManager) {
+            this.toHalf.actionManager = options.actionManager
+            this.fromHalf.actionManager = options.actionManager
+        }
+    }
+
+    hasMesh(mesh: AbstractMesh): boolean {
+        return this.fromHalf === mesh || this.toHalf === mesh
     }
 
     dispose() {

@@ -34,6 +34,7 @@ export class Simulation {
     private readonly trains: Train[] = []
     private readonly demands: Demand[] = []
     private readonly tileActionManager: ActionManager
+    private readonly trackActionManager: ActionManager
     private editState: EditState = IdleEditState.INSTANCE
 
     constructor(element: HTMLCanvasElement) {
@@ -45,13 +46,14 @@ export class Simulation {
         this.scene.onKeyboardObservable.add((i) => this.onKeyboardEvent(i))
         this.scene.onPointerObservable.add((i) => this.onPointerEvent(i))
         this.tileActionManager = new ActionManager(this.scene)
+        this.trackActionManager = new ActionManager(this.scene)
         this.createLighting()
         this.createCamera(element)
 
         this.ui = AdvancedDynamicTexture.CreateFullscreenUI("UI")
         this.ui.useInvalidateRectOptimization = false
         this.clock = new Clock(this.ui)
-        this.grid = new HexagonGrid(this.scene, this.tileActionManager)
+        this.grid = new HexagonGrid(this.scene, this.tileActionManager, this.trackActionManager)
         this.scene.hoverCursor = 'default'
         this.tileActionManager.registerAction(
             new ExecuteCodeAction({trigger: ActionManager.OnPointerOverTrigger}, (e) =>
@@ -65,6 +67,12 @@ export class Simulation {
             new ExecuteCodeAction({trigger: ActionManager.OnPickTrigger}, (e) => {
                     if (e.sourceEvent.button === 0)
                         this.editState.pickTile(this.grid.tileByName(e.meshUnderPointer?.name!!))
+                }
+            ))
+        this.trackActionManager.registerAction(
+            new ExecuteCodeAction({trigger: ActionManager.OnPickTrigger}, (e) => {
+                    if (e.sourceEvent.button === 0 && e.meshUnderPointer)
+                        this.editState.pickTrack(this.grid.trackByMesh(e.meshUnderPointer!!))
                 }
             ))
 
@@ -90,7 +98,7 @@ export class Simulation {
                         this.editState.beforeStateChange()
                         this.editState = this.editState.type === 'TRACK'
                             ? IdleEditState.INSTANCE
-                            : new TrackEditState(this.scene)
+                            : new TrackEditState(this.scene, this.grid)
                 }
         }
     }
@@ -118,8 +126,8 @@ export class Simulation {
         this.grid.createTile(q, r)
     }
 
-    placeCity(q: number, r: number, name: string) {
-        this.grid.createCityTile(q, r, new City(name, this, this.ui))
+    placeCity(q: number, r: number, name: string, from: Direction, to: Direction) {
+        this.grid.createCityTile(q, r, new City(name, this, this.ui), from, to)
     }
 
     placeTrack(q: number, r: number, from: Direction, to: Direction) {

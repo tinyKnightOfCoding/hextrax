@@ -1,5 +1,5 @@
 import {Direction} from "../Direction";
-import {Node, Scene} from "@babylonjs/core";
+import {AbstractMesh, Node, Scene} from "@babylonjs/core";
 import {TrackObject} from "./TrackObject";
 import {TrackObjectOptions} from "./TrackObjectOptions";
 
@@ -8,11 +8,12 @@ export class Track {
     private readonly object: TrackObject
     private readonly neighbours: Track[] = []
 
-    constructor(private readonly from: Direction,
-                private readonly to: Direction,
+    constructor(readonly from: Direction,
+                readonly to: Direction,
                 scene: Scene,
-                parent: Node,
-                options?: Partial<TrackObjectOptions>
+                readonly parent: Node,
+                readonly isRemovable: boolean,
+                options?: Partial<TrackObjectOptions>,
     ) {
         this.object = new TrackObject(this.from, this.to, scene, parent, options)
     }
@@ -27,6 +28,15 @@ export class Track {
 
     addNeighbour(neighbour: Track) {
         this.neighbours.push(neighbour)
+    }
+
+    removeNeighbour(neighbour: Track) {
+        const index = this.neighbours.indexOf(neighbour)
+        this.neighbours.splice(index, 1)
+    }
+
+    hasMesh(mesh: AbstractMesh): boolean {
+        return this.object.hasMesh(mesh)
     }
 
     dispose() {

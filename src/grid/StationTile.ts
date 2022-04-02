@@ -7,18 +7,20 @@ const CITY_COLOR = Color3.FromHexString("#F09E58")
 export class StationTile extends BaseTile {
 
     readonly body: Mesh
+    readonly isEditable = false
 
     constructor(
-        readonly name: string,
+        q: number,
+        r: number,
         scene: Scene,
         parent: Node,
         actionManager: ActionManager,
         readonly city: City
     ) {
-        super()
+        super(q, r)
         const mat = new StandardMaterial("tile", scene)
         mat.diffuseColor = CITY_COLOR
-        this.body = Mesh.CreateCylinder(name, 0.2, 0.99, 0.99, 6, 1, scene)
+        this.body = Mesh.CreateCylinder(this.name, 0.2, 0.99, 0.99, 6, 1, scene)
         this.body.material = mat
         this.body.parent = parent
         this.body.actionManager = actionManager

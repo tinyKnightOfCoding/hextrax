@@ -1,4 +1,4 @@
-import {Color3} from "@babylonjs/core";
+import {ActionManager, Color3} from "@babylonjs/core";
 
 export function defaultTrackObjectOptions(): TrackObjectOptions {
     return {
@@ -14,4 +14,5 @@ export interface TrackObjectOptions {
     height: number,
     color: Color3,
     alpha: number,
+    actionManager?: ActionManager,
 }

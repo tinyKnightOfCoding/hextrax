@@ -1,13 +1,13 @@
 import {City} from "./City";
-import {Path} from "./TravelGraph";
 import {Passenger} from "./Passenger";
+import {Segment} from "./TravelGraph";
 
 export class Demand {
 
     private timePassed = 0
 
     constructor(readonly city: City,
-                readonly path: Path,
+                readonly path: Segment[],
                 readonly rate: number = 1000) {
     }
 
