@@ -3,7 +3,7 @@ import {HexagonTile} from "./HexagonTile";
 import {Direction} from "../Direction";
 import {City} from "../City";
 
-export class HexagonalGrid {
+export class HexagonGrid {
 
     private readonly gridNode: Node
     private readonly map = new Map<String, HexagonTile>()

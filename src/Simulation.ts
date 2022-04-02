@@ -14,7 +14,7 @@ import {
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Control, TextBlock} from "@babylonjs/gui";
 import {Clock} from "./Clock";
-import {HexagonalGrid} from "./grid";
+import {HexagonGrid} from "./grid";
 import {City} from "./City";
 import {Direction} from "./Direction";
 import {Train} from "./Train";
@@ -27,7 +27,7 @@ export class Simulation {
     private readonly engine: Engine
     private readonly scene: Scene
     private readonly clock: Clock
-    private readonly grid: HexagonalGrid
+    private readonly grid: HexagonGrid
     private readonly ui: AdvancedDynamicTexture
     private passengerCount = 0
     private readonly passengerCountText: TextBlock
@@ -51,7 +51,7 @@ export class Simulation {
         this.ui = AdvancedDynamicTexture.CreateFullscreenUI("UI")
         this.ui.useInvalidateRectOptimization = false
         this.clock = new Clock(this.ui)
-        this.grid = new HexagonalGrid(this.scene, this.tileActionManager)
+        this.grid = new HexagonGrid(this.scene, this.tileActionManager)
         this.scene.hoverCursor = 'default'
         this.tileActionManager.registerAction(
             new ExecuteCodeAction({trigger: ActionManager.OnPointerOverTrigger}, (e) =>

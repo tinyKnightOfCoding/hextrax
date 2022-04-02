@@ -1,2 +1,2 @@
-export * from './HexagonalGrid'
+export * from './HexagonGrid'
 export * from './HexagonTile'
