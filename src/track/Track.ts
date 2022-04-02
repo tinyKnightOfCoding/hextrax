@@ -1,36 +1,19 @@
 import {Direction} from "../Direction";
-import {Color3, Mesh, MeshBuilder, Node, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
+import {Node, Scene} from "@babylonjs/core";
+import {TrackObject} from "./TrackObject";
+import {TrackObjectOptions} from "./TrackObjectOptions";
 
 export class Track {
 
-    private fromHalf: Mesh
-    private toHalf: Mesh
+    private readonly object: TrackObject
 
     constructor(private readonly from: Direction,
                 private readonly to: Direction,
                 scene: Scene,
                 parent: Node,
-                width: number = 0.1,
-                height: number = 0.01,
-                color: Color3 = Color3.Gray(),
-                alpha: number = 1
+                options?: Partial<TrackObjectOptions>
     ) {
-        const mat = new StandardMaterial("gray", scene)
-        mat.diffuseColor = color
-        mat.specularColor = color
-        mat.alpha = alpha
-        this.fromHalf = MeshBuilder.CreateBox("track", {width: width, height: height, depth: Math.sqrt(3) / 4}, scene)
-        this.fromHalf.material = mat
-        this.fromHalf.parent = parent
-        this.fromHalf.translate(Vector3.Up(), 0.105)
-        this.fromHalf.translate(this.from.direction, Math.sqrt(3) / 8)
-        this.fromHalf.rotation = this.from.rotation
-        this.toHalf = MeshBuilder.CreateBox("track", {width: width, height: height, depth: Math.sqrt(3) / 4}, scene)
-        this.toHalf.material = mat
-        this.toHalf.parent = parent
-        this.toHalf.translate(Vector3.Up(), 0.105)
-        this.toHalf.translate(this.to.direction, Math.sqrt(3) / 8)
-        this.toHalf.rotation = this.to.rotation
+        this.object = new TrackObject(this.from, this.to, scene, parent, options)
     }
 
     equals(from: Direction, to: Direction): boolean {
@@ -38,7 +21,6 @@ export class Track {
     }
 
     dispose() {
-        this.fromHalf.dispose()
-        this.toHalf.dispose()
+        this.object.dispose()
     }
 }

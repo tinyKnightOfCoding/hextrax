@@ -81,10 +81,7 @@ export class TrackEditState implements EditState {
             this.currentOrientation[1],
             this.scene,
             tile.body,
-            0.11,
-            0.02,
-            Color3.Blue(),
-            0.5
+            {width: 0.11, height: 0.02, color: Color3.Blue(), alpha: 0.5}
         )
     }
 
@@ -113,10 +110,7 @@ export class TrackEditState implements EditState {
                 this.currentOrientation[1],
                 this.scene,
                 this.currentTile?.body!!,
-                0.1,
-                0.01,
-                Color3.Blue(),
-                0.5
+                {width: 0.11, height: 0.02, color: Color3.Blue(), alpha: 0.5}
             )
     }
 }
