@@ -72,10 +72,6 @@ export class TrackGraph {
     private calculatePath(origin: City, destination: City): Track[] {
         const originTrack = this.tracks.find(t => t.station === origin)
         const destinationTrack = this.tracks.find(t => t.station === destination)
-        if(origin.name === 'Murten' && destination.name === 'Biel') {
-            console.log(originTrack)
-            console.log(destinationTrack)
-        }
         if (!originTrack || !destinationTrack) {
             throw new Error("unknown cities")
         }

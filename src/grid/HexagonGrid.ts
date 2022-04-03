@@ -40,14 +40,14 @@ export class HexagonGrid {
         if (!newTrack) {
             return
         }
-        const neighbourTracks = [
-            ...(this.findNeighbourTile(q, r, from)?.tracksByDirection(from.opposite) ?? []),
-            ...(this.findNeighbourTile(q, r, to)?.tracksByDirection(to.opposite) ?? []),
-        ]
-        neighbourTracks.forEach(t => {
-            t.addNeighbour(newTrack)
-            newTrack.addNeighbour(t)
-        })
+        (this.findNeighbourTile(q, r, from)?.tracksByDirection(from.opposite) ?? []).forEach((t: Track) => {
+            t.addNeighbour(newTrack, from.opposite)
+            newTrack.addNeighbour(t, from)
+        });
+        (this.findNeighbourTile(q, r, to)?.tracksByDirection(to.opposite) ?? []).forEach((t: Track) => {
+            t.addNeighbour(newTrack, to.opposite)
+            newTrack.addNeighbour(t, to)
+        });
         this.trackGraph.afterTrackAdded(newTrack)
     }
 

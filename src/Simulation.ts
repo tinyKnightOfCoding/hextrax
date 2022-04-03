@@ -94,7 +94,6 @@ export class Simulation {
             case KeyboardEventTypes.KEYUP:
                 switch (keyboardInfo.event.code) {
                     case "KeyT":
-                        console.log("T pressed")
                         this.editState.beforeStateChange()
                         this.editState = this.editState.type === 'TRACK'
                             ? IdleEditState.INSTANCE

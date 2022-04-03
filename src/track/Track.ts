@@ -7,7 +7,9 @@ import {City} from "../City";
 export class Track {
 
     private readonly object: TrackObject
-    private readonly neighbours: Track[] = []
+    private readonly toNeighbours: Track[] = []
+    private readonly fromNeighbours: Track[] = []
+
 
     constructor(readonly from: Direction,
                 readonly to: Direction,
@@ -22,24 +24,32 @@ export class Track {
 
     shortestPathTo(destination: Track): Track[] {
         const paths: Track[][] = []
-        const possiblePaths: Track[][] = [[this]]
+        const possiblePaths: { path: Track[], dir: Direction }[] = [
+            {path: [this], dir: this.from},
+            {path: [this], dir: this.to},
+        ]
         while (possiblePaths.length > 0) {
             const path = possiblePaths.shift()!!
-            if(path[path.length - 1] === destination) {
-                paths.push(path)
+            if (path.path[path.path.length - 1] === destination) {
+                paths.push(path.path)
                 continue
             }
-            for (const neighbour of path[path.length - 1].neighbours) {
-                if (path.includes(neighbour)) continue
-                possiblePaths.push([...path, neighbour])
+            const lastTrack = path.path[path.path.length - 1]
+            const neighbours = lastTrack.from === path.dir ? lastTrack.fromNeighbours : lastTrack.toNeighbours
+            for (const neighbour of neighbours) {
+                if (path.path.includes(neighbour)) continue
+                possiblePaths.push({
+                    path: [...(path.path), neighbour],
+                    dir: neighbour.from === path.dir.opposite ? neighbour.to : neighbour.from
+                })
             }
         }
-        if(paths.length === 0) {
+        if (paths.length === 0) {
             return []
         }
         let champion = paths.shift()!!
         for (const challenger of paths) {
-            if(challenger.length < champion.length) {
+            if (challenger.length < champion.length) {
                 champion = challenger
             }
         }
@@ -52,20 +62,23 @@ export class Track {
     }
 
     hasDirection(d: Direction): boolean {
-        const hasDirection = this.from === d || this.to === d;
-        if(this.station?.name === 'Murten') {
-            console.log('Murten has track with direction, {}', d, ' => ', hasDirection)
-        }
-        return hasDirection
+        return this.from === d || this.to === d
     }
 
-    addNeighbour(neighbour: Track) {
-        this.neighbours.push(neighbour)
+    addNeighbour(neighbour: Track, direction: Direction) {
+        if (direction === this.to)
+            this.toNeighbours.push(neighbour)
+        if (direction === this.from)
+            this.fromNeighbours.push(neighbour)
     }
 
     removeNeighbour(neighbour: Track) {
-        const index = this.neighbours.indexOf(neighbour)
-        this.neighbours.splice(index, 1)
+        let index = this.toNeighbours.indexOf(neighbour)
+        if (index >= 0)
+            this.toNeighbours.splice(index, 1)
+        index = this.fromNeighbours.indexOf(neighbour)
+        if (index >= 0)
+            this.fromNeighbours.splice(index, 1)
     }
 
     hasMesh(mesh: AbstractMesh): boolean {
