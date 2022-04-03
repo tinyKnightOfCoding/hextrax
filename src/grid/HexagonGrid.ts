@@ -4,12 +4,13 @@ import {Direction} from "../Direction";
 import {City} from "../City";
 import {PlaneTile} from "./PlaneTile";
 import {StationTile} from "./StationTile";
-import {Track} from "../track";
+import {Track, TrackGraph} from "../track";
 
 export class HexagonGrid {
 
     private readonly gridNode: Node
     private readonly map = new Map<String, HexagonTile>()
+    readonly trackGraph = new TrackGraph()
 
     constructor(scene: Scene,
                 private readonly tileActionManager: ActionManager,
@@ -30,16 +31,24 @@ export class HexagonGrid {
         const newTile = new StationTile(q, r, this.gridNode._scene, this.gridNode, this.tileActionManager, city)
         newTile.setPosition(this.convert(q, r))
         this.map.set(newTile.name, newTile)
-        this.placeTrack(q, r, from, to, false)
+        this.placeTrack(q, r, from, to, city)
+        this.trackGraph.afterCityAdded(city)
     }
 
-    placeTrack(q: number, r: number, from: Direction, to: Direction, isRemovable?: boolean) {
-        const newTrack = this.findTile(q, r)?.addTrack(from, to, this.trackActionManager, isRemovable);
+    placeTrack(q: number, r: number, from: Direction, to: Direction, station?: City): void {
+        const newTrack = this.findTile(q, r)?.addTrack(from, to, this.trackActionManager, !!station, station);
         if (!newTrack) {
             return
         }
-        this.findNeighbourTile(q, r, from)?.tracksByDirection(from.opposite)?.forEach(t => t.addNeighbour(newTrack))
-        this.findNeighbourTile(q, r, to)?.tracksByDirection(to.opposite)?.forEach(t => t.addNeighbour(newTrack))
+        const neighbourTracks = [
+            ...(this.findNeighbourTile(q, r, from)?.tracksByDirection(from.opposite) ?? []),
+            ...(this.findNeighbourTile(q, r, to)?.tracksByDirection(to.opposite) ?? []),
+        ]
+        neighbourTracks.forEach(t => {
+            t.addNeighbour(newTrack)
+            newTrack.addNeighbour(t)
+        })
+        this.trackGraph.afterTrackAdded(newTrack)
     }
 
     removeTrack(track: Track) {
@@ -48,6 +57,7 @@ export class HexagonGrid {
         this.findNeighbourTile(tile.q, tile.r, track.from)?.tracksByDirection(track.from.opposite)?.forEach(t => t.removeNeighbour(track))
         this.findNeighbourTile(tile.q, tile.r, track.to)?.tracksByDirection(track.to.opposite)?.forEach(t => t.removeNeighbour(track))
         track.dispose()
+        this.trackGraph.afterTrackRemoved(track)
     }
 
     trackByMesh(mesh: AbstractMesh): Track {

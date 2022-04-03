@@ -2,6 +2,7 @@ import {AbstractMesh, ActionManager, Mesh, Vector3} from "@babylonjs/core";
 import {HexagonTile} from "./HexagonTile";
 import {Track} from "../track";
 import {Direction} from "../Direction";
+import {City} from "../City";
 
 export abstract class BaseTile implements HexagonTile {
 
@@ -10,7 +11,7 @@ export abstract class BaseTile implements HexagonTile {
     abstract isEditable: boolean
     private readonly tracks: Track[] = []
 
-    constructor(readonly q: number, readonly r: number) {
+    protected constructor(readonly q: number, readonly r: number) {
         this.name = `tile-${q}-${r}`
     }
 
@@ -18,9 +19,14 @@ export abstract class BaseTile implements HexagonTile {
         this.body.position = newPosition.clone()
     }
 
-    addTrack(from: Direction, to: Direction, mngr: ActionManager, isRemovable: boolean = true): Track | undefined {
+    addTrack(from: Direction,
+             to: Direction,
+             mngr: ActionManager,
+             isRemovable: boolean = true,
+             station?: City
+    ): Track | undefined {
         if (this.tracks.some(t => t.equals(from, to))) return undefined
-        const newTrack = new Track(from, to, this.body._scene, this.body, isRemovable, {actionManager: mngr});
+        const newTrack = new Track(from, to, this.body._scene, this.body, isRemovable, station, {actionManager: mngr});
         this.tracks.push(newTrack)
         return newTrack
     }

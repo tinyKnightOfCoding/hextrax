@@ -13,7 +13,12 @@ export interface HexagonTile {
 
     setPosition(position: Vector3): void
 
-    addTrack(from: Direction, to: Direction, trackActionManager: ActionManager, isRemovable?: boolean): Track | undefined
+    addTrack(from: Direction,
+             to: Direction,
+             trackActionManager: ActionManager,
+             isRemovable?: boolean,
+             station?: City
+             ): Track | undefined
 
     removeTrack(track: Track): void
 
