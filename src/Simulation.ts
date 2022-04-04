@@ -17,10 +17,11 @@ import {Clock} from "./Clock";
 import {HexagonGrid} from "./grid";
 import {City} from "./City";
 import {Direction} from "./Direction";
-import {Train} from "./Train";
-import {RailwayLine} from "./RailwayLine";
+import {Train} from "./train/Train";
+import {RailwayLine} from "./line/RailwayLine";
 import {Demand} from "./Demand";
 import {EditState, IdleEditState, TrackEditState} from "./EditState";
+import {TrackGraph} from "./track";
 
 export class Simulation {
 
@@ -89,6 +90,10 @@ export class Simulation {
         this.ui.addControl(this.passengerCountText)
     }
 
+    get trackGraph(): TrackGraph {
+        return this.grid.trackGraph
+    }
+
     private onKeyboardEvent(keyboardInfo: KeyboardInfo) {
         switch (keyboardInfo.type) {
             case KeyboardEventTypes.KEYUP:
@@ -125,8 +130,10 @@ export class Simulation {
         this.grid.createTile(q, r)
     }
 
-    placeCity(q: number, r: number, name: string, from: Direction, to: Direction) {
-        this.grid.createCityTile(q, r, new City(name, this, this.ui), from, to)
+    placeCity(q: number, r: number, name: string, from: Direction, to: Direction): City {
+        const city = new City(name, this, this.ui);
+        this.grid.createCityTile(q, r, city, from, to)
+        return city
     }
 
     placeTrack(q: number, r: number, from: Direction, to: Direction) {

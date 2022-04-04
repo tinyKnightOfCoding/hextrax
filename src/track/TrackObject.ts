@@ -3,8 +3,8 @@ import {Direction} from "../Direction";
 import {defaultTrackObjectOptions, TrackObjectOptions} from "./TrackObjectOptions";
 
 export class TrackObject {
-    private fromHalf: Mesh
-    private toHalf: Mesh
+    private readonly fromHalf: Mesh
+    private readonly toHalf: Mesh
 
     constructor(
         from: Direction,
@@ -30,7 +30,7 @@ export class TrackObject {
         this.toHalf.translate(Vector3.Up(), 0.105)
         this.toHalf.translate(to.direction, Math.sqrt(3) / 8)
         this.toHalf.rotation = to.rotation
-        if(options.actionManager) {
+        if (options.actionManager) {
             this.toHalf.actionManager = options.actionManager
             this.fromHalf.actionManager = options.actionManager
         }

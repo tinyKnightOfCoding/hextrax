@@ -10,7 +10,6 @@ export class TrackGraph {
     afterTrackAdded(track: Track) {
         this.tracks.push(track)
         this.recalculateAllPaths()
-        this.log()
     }
 
     afterTrackRemoved(track: Track) {
@@ -19,17 +18,15 @@ export class TrackGraph {
             this.tracks.splice(idx, 1)
             this.recalculatePathsWithTrack(track)
         }
-        this.log()
     }
 
     afterCityAdded(city: City) {
         this.calculateAllPathsForCity(city)
         this.cities.push(city)
-        this.log()
     }
 
-    private log() {
-        console.log(this.shortestPaths.map(p => ({o: p.origin.name, d: p.destination.name, l: p.path.length})))
+    path(origin: City, destination: City): Track[] {
+        return this.shortestPaths.find(sp => sp.origin === origin && sp.destination === destination)?.path ?? []
     }
 
     private calculateAllPathsForCity(city: City) {

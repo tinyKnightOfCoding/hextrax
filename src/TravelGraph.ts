@@ -1,4 +1,4 @@
-import {RailwayLine, Waypoint} from "./RailwayLine";
+import {RailwayLine, Waypoint} from "./line/RailwayLine";
 
 interface Neighbour {
     cityName: string,
@@ -13,6 +13,7 @@ export interface Segment {
     destination: string
 }
 
+// TODO legacy
 export class TravelGraph {
 
     private readonly neighbours: { [key: string]: Neighbour[] } = {}

@@ -1,5 +1,5 @@
 import {Direction} from "../Direction";
-import {AbstractMesh, Node, Scene} from "@babylonjs/core";
+import {AbstractMesh, Mesh, Scene, Vector3} from "@babylonjs/core";
 import {TrackObject} from "./TrackObject";
 import {TrackObjectOptions} from "./TrackObjectOptions";
 import {City} from "../City";
@@ -14,12 +14,18 @@ export class Track {
     constructor(readonly from: Direction,
                 readonly to: Direction,
                 scene: Scene,
-                readonly parent: Node,
+                readonly parent: Mesh,
                 readonly isRemovable: boolean,
                 readonly station?: City,
                 options?: Partial<TrackObjectOptions>,
     ) {
         this.object = new TrackObject(this.from, this.to, scene, parent, options)
+    }
+
+    get position(): Vector3 {
+        const pos = this.parent.position.clone();
+        pos.y = 0.17
+        return pos
     }
 
     shortestPathTo(destination: Track): Track[] {

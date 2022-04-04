@@ -2,8 +2,9 @@ import {HexagonGrid, HexagonTile} from "./grid";
 import {Track, TrackObject} from "./track";
 import {Direction} from "./Direction";
 import {Color3, Scene} from "@babylonjs/core";
+import {RailwayLine} from "./line";
 
-export type EditStateType = 'IDLE' | 'TRACK'
+export type EditStateType = 'IDLE' | 'TRACK' | 'LINE'
 
 export interface EditState {
     readonly type: EditStateType
@@ -24,12 +25,9 @@ export interface EditState {
 export class IdleEditState implements EditState {
 
     static INSTANCE = new IdleEditState()
+    readonly type = 'IDLE'
 
     private constructor() {
-    }
-
-    get type(): EditStateType {
-        return 'IDLE'
     }
 
     enterTile(_tile: HexagonTile) {
@@ -51,6 +49,32 @@ export class IdleEditState implements EditState {
     }
 }
 
+export class LineEditState implements EditState {
+    readonly type = 'LINE'
+
+    constructor(private readonly line: RailwayLine) {
+    }
+
+    beforeStateChange(): void {
+    }
+
+    enterTile(tile: HexagonTile): void {
+    }
+
+    leaveTile(tile: HexagonTile): void {
+    }
+
+    pickTile(tile: HexagonTile): void {
+    }
+
+    pickTrack(track: Track): void {
+    }
+
+    rightClick(): void {
+    }
+
+}
+
 export class TrackEditState implements EditState {
 
     private currentTrack?: TrackObject
@@ -67,16 +91,13 @@ export class TrackEditState implements EditState {
     ]
     private currentTile?: HexagonTile
     private currentOrientationIndex = 0
+    readonly type = 'TRACK'
 
     constructor(private readonly scene: Scene, private readonly grid: HexagonGrid) {
     }
 
     private get currentOrientation(): [Direction, Direction] {
         return this.orientations[this.currentOrientationIndex]
-    }
-
-    get type(): EditStateType {
-        return 'TRACK'
     }
 
     enterTile(tile: HexagonTile) {

@@ -1,8 +1,8 @@
-import {RailwayLine, Waypoint} from "./RailwayLine";
+import {RailwayLine, Waypoint} from "../line";
 import {Color3, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
 import {AdvancedDynamicTexture, Control, Rectangle, TextBlock} from "@babylonjs/gui";
-import {Passenger} from "./Passenger";
-import {Simulation} from "./Simulation";
+import {Passenger} from "../Passenger";
+import {Simulation} from "../Simulation";
 
 type TrainState = 'STOP' | 'TRAVEL'
 
