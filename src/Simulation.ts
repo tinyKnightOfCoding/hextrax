@@ -20,7 +20,7 @@ import {Direction} from "./Direction";
 import {Train} from "./train";
 import {RailwayLine} from "./line";
 import {Demand} from "./Demand";
-import {EditState, IdleEditState, LineEditState, TrackEditState} from "./EditState";
+import {EditState, IdleEditState, LineEditState, TrackEditState} from "./controls";
 import {TrackGraph} from "./track";
 
 export class Simulation {
