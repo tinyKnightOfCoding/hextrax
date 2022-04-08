@@ -12,14 +12,6 @@ export class TrackGraph {
         this.recalculateAllPaths()
     }
 
-    afterTrackRemoved(track: Track) {
-        const idx = this.tracks.indexOf(track)
-        if (idx >= 0) {
-            this.tracks.splice(idx, 1)
-            this.recalculatePathsWithTrack(track)
-        }
-    }
-
     afterCityAdded(city: City) {
         this.calculateAllPathsForCity(city)
         this.cities.push(city)
@@ -41,14 +33,6 @@ export class TrackGraph {
                 destination: otherCity,
                 path: this.calculatePath(city, otherCity)
             })
-        }
-    }
-
-    private recalculatePathsWithTrack(track: Track) {
-        for (const sp of this.shortestPaths) {
-            if (sp.path.includes(track)) {
-                sp.path = this.calculatePath(sp.origin, sp.destination)
-            }
         }
     }
 
