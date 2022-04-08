@@ -65,7 +65,7 @@ export class Controls {
                         this.editState.onDestroy()
                         this.editState = this.editState.type === 'TRACK'
                             ? IdleEditState.INSTANCE
-                            : new TrackEditState(this.scene, this.grid)
+                            : new TrackEditState(this.scene, this.grid, this.sim.inventory)
                         this.editState.onCreate()
                         break
                     case 'Digit1':

@@ -24,10 +24,8 @@ export class LineEditState extends BaseEditState {
     }
 
     onKeyup(code: string) {
-        switch (code) {
-            case 'NumpadAdd':
-                this.sim.placeTrain('T' + (String(this.sim.trainCount + 1).padStart(3, '0')), this.line)
-                break
+        if(code === 'NumpadAdd' && this.sim.inventory.useTrain()) {
+            this.sim.placeTrain('T' + (String(this.sim.trainCount + 1).padStart(3, '0')), this.line)
         }
     }
 

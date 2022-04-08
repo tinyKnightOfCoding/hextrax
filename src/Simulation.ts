@@ -9,6 +9,7 @@ import {RailwayLine} from './line'
 import {Demand} from './Demand'
 import {Controls} from './controls'
 import {TrackGraph} from './track'
+import {Inventory} from './inventory'
 
 export class Simulation {
 
@@ -24,6 +25,7 @@ export class Simulation {
     private readonly _lines: RailwayLine[] = []
     readonly tileActionManager: ActionManager
     readonly trackActionManager: ActionManager
+    readonly inventory: Inventory
     // @ts-ignore
     private readonly controls: Controls
 
@@ -45,6 +47,7 @@ export class Simulation {
         this.grid = new HexagonGrid(this.scene, this.tileActionManager, this.trackActionManager)
         this.controls = new Controls(this)
         this.scene.hoverCursor = 'default'
+        this.inventory = new Inventory(this.ui)
 
         this.passengerCountText = new TextBlock()
         this.passengerCountText.text = `passengers transported: ${this.passengerCount}`

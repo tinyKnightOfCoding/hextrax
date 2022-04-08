@@ -20,4 +20,7 @@ export function defaultMode(simulation: Simulation) {
     simulation.addLine(new RailwayLine("Line 1", Color3.Red(), simulation.trackGraph))
     simulation.addLine(new RailwayLine("Line 2", Color3.Green(), simulation.trackGraph))
 
+    simulation.inventory.addTracks(15)
+    simulation.inventory.addTrains(3)
+
 }

@@ -3,6 +3,7 @@ import {Direction} from '../Direction'
 import {HexagonGrid, HexagonTile} from '../grid'
 import {Color3, Scene} from '@babylonjs/core'
 import {BaseEditState} from './BaseEditState'
+import {Inventory} from '../inventory'
 
 export class TrackEditState extends BaseEditState {
 
@@ -21,7 +22,10 @@ export class TrackEditState extends BaseEditState {
     private currentTile?: HexagonTile
     private currentOrientationIndex = 0
 
-    constructor(private readonly scene: Scene, private readonly grid: HexagonGrid) {
+    constructor(private readonly scene: Scene,
+                private readonly grid: HexagonGrid,
+                private readonly inventory: Inventory,
+    ) {
         super('TRACK')
     }
 
@@ -54,7 +58,7 @@ export class TrackEditState extends BaseEditState {
     }
 
     pickTile(tile: HexagonTile) {
-        if (tile.isEditable) {
+        if (tile.isEditable && this.inventory.useTrack()) {
             this.grid.placeTrack(tile.q, tile.r, this.currentOrientation[0], this.currentOrientation[1])
         }
     }
