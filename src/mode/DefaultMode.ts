@@ -6,10 +6,10 @@ import {Demand} from '../passenger'
 
 export function defaultMode(simulation: Simulation) {
     const murten = simulation.placeCity(-4, 1, 'Murten', Direction.SOUTH_EAST, Direction.NORTH_WEST)
-    simulation.placeCity(0, 0, 'Bern', Direction.NORTH_WEST, Direction.SOUTH_EAST)
-    simulation.placeCity(3, -4, 'Solothurn', Direction.WEST, Direction.SOUTH_EAST)
-    simulation.placeCity(3, 3, 'Thun', Direction.WEST, Direction.EAST)
-    simulation.placeCity(-2, 4, 'Fribourg', Direction.NORTH_EAST, Direction.SOUTH_WEST)
+    const bern = simulation.placeCity(0, 0, 'Bern', Direction.NORTH_WEST, Direction.SOUTH_EAST)
+    const solothurn = simulation.placeCity(3, -4, 'Solothurn', Direction.WEST, Direction.SOUTH_EAST)
+    const thun = simulation.placeCity(3, 3, 'Thun', Direction.WEST, Direction.EAST)
+    const fribourg = simulation.placeCity(-2, 4, 'Fribourg', Direction.NORTH_EAST, Direction.SOUTH_WEST)
     const biel = simulation.placeCity(-2, -2, 'Biel', Direction.SOUTH_WEST, Direction.NORTH_EAST)
 
     for (let q = -5; q < 6; q++) {
@@ -21,9 +21,14 @@ export function defaultMode(simulation: Simulation) {
     simulation.addLine(new RailwayLine('Line 1', Color3.Red(), simulation.trackGraph, simulation.travelGraph))
     simulation.addLine(new RailwayLine('Line 2', Color3.Green(), simulation.trackGraph, simulation.travelGraph))
 
-    simulation.inventory.addTracks(15)
+    simulation.inventory.addTracks(16)
     simulation.inventory.addTrains(3)
 
-    simulation.addDemand(new Demand(murten, biel, simulation, 2000))
+    simulation.addDemand(new Demand(murten, solothurn, simulation, 2000))
+    simulation.addDemand(new Demand(biel, bern, simulation, 1500))
+    simulation.addDemand(new Demand(thun, murten, simulation, 1500))
+    simulation.addDemand(new Demand(fribourg, biel, simulation, 1500))
+    simulation.addDemand(new Demand(solothurn, bern, simulation, 1000))
+    simulation.addDemand(new Demand(bern, thun, simulation, 1500))
 
 }
