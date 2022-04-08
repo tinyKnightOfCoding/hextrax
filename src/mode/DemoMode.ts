@@ -43,14 +43,18 @@ export function demoMode(simulation: Simulation) {
     line.addStopAt(biel)
     line.addStopAt(solothurn)
 
-    const line2 = new RailwayLine('solothurn-bern-thun', Color3.Blue(), simulation.trackGraph)
+    const line2 = new RailwayLine('solothurn-bern-thun', Color3.Green(), simulation.trackGraph)
     line2.addStopAt(solothurn)
     line2.addStopAt(bern)
     line2.addStopAt(thun)
 
-    const line3 = new RailwayLine('fribourg-bern', Color3.Green(), simulation.trackGraph)
+    const line3 = new RailwayLine('fribourg-bern', Color3.Blue(), simulation.trackGraph)
     line3.addStopAt(fribourg)
     line3.addStopAt(bern)
+
+    simulation.addLine(line)
+    simulation.addLine(line2)
+    simulation.addLine(line3)
 
     simulation.placeTrain('IC1', line)
     simulation.placeTrain('RE', line2)
