@@ -1,7 +1,7 @@
-import {AbstractMesh, ActionManager, Mesh, Vector3} from "@babylonjs/core";
-import {City} from "../City";
-import {Direction} from "../Direction";
-import {Track} from "../track";
+import {AbstractMesh, ActionManager, Mesh, Vector3} from '@babylonjs/core'
+import {City} from '../City'
+import {Direction} from '../Direction'
+import {Track} from '../track'
 
 export interface HexagonTile {
     readonly q: number,
@@ -17,8 +17,8 @@ export interface HexagonTile {
              to: Direction,
              trackActionManager: ActionManager,
              isRemovable?: boolean,
-             station?: City
-             ): Track | undefined
+             station?: City,
+    ): Track | undefined
 
     removeTrack(track: Track): void
 

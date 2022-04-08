@@ -1,6 +1,6 @@
-import {Track, TrackGraph} from "../track";
-import {City} from "../City";
-import {Color3, Vector3} from "@babylonjs/core";
+import {Track, TrackGraph} from '../track'
+import {City} from '../City'
+import {Color3, Vector3} from '@babylonjs/core'
 
 export interface Waypoint {
     coordinate: Vector3
@@ -13,7 +13,7 @@ export class RailwayLine {
 
     constructor(readonly name: string,
                 readonly color: Color3,
-                private readonly trackGraph: TrackGraph
+                private readonly trackGraph: TrackGraph,
     ) {
     }
 

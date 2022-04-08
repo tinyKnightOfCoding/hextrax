@@ -1,4 +1,4 @@
-import {Vector3} from "@babylonjs/core";
+import {Vector3} from '@babylonjs/core'
 
 export class Direction {
     static WEST = new Direction(-1, 0, new Vector3(0, 0, 0), new Vector3(0, 0, -1))

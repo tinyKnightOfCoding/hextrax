@@ -1,5 +1,5 @@
 import {Segment} from "./TravelGraph";
-import {City} from "./City";
+import {City} from "../City";
 
 export class Passenger {
 

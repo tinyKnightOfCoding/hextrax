@@ -1,4 +1,4 @@
-import {City} from "./City";
+import {City} from "../City";
 import {Passenger} from "./Passenger";
 import {Segment} from "./TravelGraph";
 

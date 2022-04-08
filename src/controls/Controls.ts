@@ -5,7 +5,8 @@ import {
     KeyboardEventTypes,
     KeyboardInfo,
     PointerEventTypes,
-    PointerInfo, Scene,
+    PointerInfo,
+    Scene,
 } from '@babylonjs/core'
 import {EditState} from './EditState'
 import {IdleEditState} from './IdleEditState'

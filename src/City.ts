@@ -1,7 +1,7 @@
-import {AdvancedDynamicTexture, Control, Rectangle, TextBlock} from "@babylonjs/gui";
-import {Mesh} from "@babylonjs/core";
-import {Passenger} from "./Passenger";
-import {Simulation} from "./Simulation";
+import {AdvancedDynamicTexture, Control, Rectangle, TextBlock} from '@babylonjs/gui'
+import {Mesh} from '@babylonjs/core'
+import {Passenger} from './passenger'
+import {Simulation} from './Simulation'
 
 export class City {
 
@@ -12,19 +12,19 @@ export class City {
     constructor(readonly name: string, private readonly simulation: Simulation, ui: AdvancedDynamicTexture) {
         this.nameBox = new Rectangle()
         ui.addControl(this.nameBox)
-        this.nameBox.width = "120px"
-        this.nameBox.height = "30px"
+        this.nameBox.width = '120px'
+        this.nameBox.height = '30px'
         this.nameBox.thickness = 2
-        this.nameBox.linkOffsetY = "-30px"
+        this.nameBox.linkOffsetY = '-30px'
         this.nameBox.transformCenterY = 1
         this.nameBox.alpha = 0.4
         this.nameBox.cornerRadius = 5
-        this.nameBox.background = "black"
+        this.nameBox.background = 'black'
         this.nameTag = new TextBlock()
         this.nameTag.text = `${this.name} (${this.passengers.length})`
-        this.nameTag.color = "white"
-        this.nameTag.fontSize = "18"
-        this.nameTag.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        this.nameTag.color = 'white'
+        this.nameTag.fontSize = '18'
+        this.nameTag.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
         this.nameTag.alpha = 1
         this.nameBox.addControl(this.nameTag)
     }

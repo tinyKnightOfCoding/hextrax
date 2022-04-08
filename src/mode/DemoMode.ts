@@ -1,18 +1,18 @@
-import {Simulation} from "../Simulation";
-import {Direction} from "../Direction";
-import {RailwayLine} from "../line";
-import {TravelGraph} from "../TravelGraph";
-import {Demand} from "../Demand";
-import {Color3} from "@babylonjs/core";
+import {Simulation} from '../Simulation'
+import {Direction} from '../Direction'
+import {RailwayLine} from '../line'
+import {TravelGraph} from '../passenger'
+import {Demand} from '../passenger'
+import {Color3} from '@babylonjs/core'
 
 export function demoMode(simulation: Simulation) {
 
-    const murten = simulation.placeCity(-4, 1, "Murten", Direction.SOUTH_EAST, Direction.NORTH_WEST)
-    const bern = simulation.placeCity(0, 0, "Bern", Direction.NORTH_WEST, Direction.SOUTH_EAST)
-    const solothurn = simulation.placeCity(3, -4, "Solothurn", Direction.WEST, Direction.SOUTH_EAST)
-    const thun = simulation.placeCity(3, 3, "Thun", Direction.WEST, Direction.EAST)
-    const fribourg = simulation.placeCity(-2, 4, "Fribourg", Direction.NORTH_EAST, Direction.SOUTH_WEST)
-    const biel = simulation.placeCity(-2, -2, "Biel", Direction.SOUTH_WEST, Direction.NORTH_EAST)
+    const murten = simulation.placeCity(-4, 1, 'Murten', Direction.SOUTH_EAST, Direction.NORTH_WEST)
+    const bern = simulation.placeCity(0, 0, 'Bern', Direction.NORTH_WEST, Direction.SOUTH_EAST)
+    const solothurn = simulation.placeCity(3, -4, 'Solothurn', Direction.WEST, Direction.SOUTH_EAST)
+    const thun = simulation.placeCity(3, 3, 'Thun', Direction.WEST, Direction.EAST)
+    const fribourg = simulation.placeCity(-2, 4, 'Fribourg', Direction.NORTH_EAST, Direction.SOUTH_WEST)
+    const biel = simulation.placeCity(-2, -2, 'Biel', Direction.SOUTH_WEST, Direction.NORTH_EAST)
 
     for (let q = -5; q < 6; q++) {
         for (let r = -5; r < 6; r++) {
@@ -52,12 +52,12 @@ export function demoMode(simulation: Simulation) {
     line3.addStopAt(fribourg)
     line3.addStopAt(bern)
 
-    simulation.placeTrain("IC1", line)
-    simulation.placeTrain("RE", line2)
-    simulation.placeTrain("S1", line3)
+    simulation.placeTrain('IC1', line)
+    simulation.placeTrain('RE', line2)
+    simulation.placeTrain('S1', line3)
 
     const travelGraph = new TravelGraph(line, line2, line3)
-    simulation.addDemand(new Demand(simulation.cityByName("Murten"), travelGraph.findRoute("Murten", "Thun"), 1500))
-    simulation.addDemand(new Demand(simulation.cityByName("Fribourg"), travelGraph.findRoute("Fribourg", "Thun"), 2000))
-    simulation.addDemand(new Demand(simulation.cityByName("Bern"), travelGraph.findRoute("Bern", "Biel"), 1000))
+    simulation.addDemand(new Demand(simulation.cityByName('Murten'), travelGraph.findRoute('Murten', 'Thun'), 1500))
+    simulation.addDemand(new Demand(simulation.cityByName('Fribourg'), travelGraph.findRoute('Fribourg', 'Thun'), 2000))
+    simulation.addDemand(new Demand(simulation.cityByName('Bern'), travelGraph.findRoute('Bern', 'Biel'), 1000))
 }

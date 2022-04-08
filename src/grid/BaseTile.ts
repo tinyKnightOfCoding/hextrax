@@ -1,8 +1,8 @@
-import {AbstractMesh, ActionManager, Mesh, Vector3} from "@babylonjs/core";
-import {HexagonTile} from "./HexagonTile";
-import {Track} from "../track";
-import {Direction} from "../Direction";
-import {City} from "../City";
+import {AbstractMesh, ActionManager, Mesh, Vector3} from '@babylonjs/core'
+import {HexagonTile} from './HexagonTile'
+import {Track} from '../track'
+import {Direction} from '../Direction'
+import {City} from '../City'
 
 export abstract class BaseTile implements HexagonTile {
 
@@ -23,10 +23,10 @@ export abstract class BaseTile implements HexagonTile {
              to: Direction,
              mngr: ActionManager,
              isRemovable: boolean = true,
-             station?: City
+             station?: City,
     ): Track | undefined {
         if (this.tracks.some(t => t.equals(from, to))) return undefined
-        const newTrack = new Track(from, to, this.body._scene, this.body, isRemovable, station, {actionManager: mngr});
+        const newTrack = new Track(from, to, this.body._scene, this.body, isRemovable, station, {actionManager: mngr})
         this.tracks.push(newTrack)
         return newTrack
     }

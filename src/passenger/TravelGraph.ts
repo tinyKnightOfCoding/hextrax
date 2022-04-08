@@ -1,4 +1,4 @@
-import {RailwayLine, Waypoint} from "./line/RailwayLine";
+import {RailwayLine, Waypoint} from '../line'
 
 interface Neighbour {
     cityName: string,
@@ -30,7 +30,7 @@ export class TravelGraph {
                         cityName: neighbourStop[0].stopName!!,
                         distance: neighbourStop[1] - currentStop[1],
                         lineName: line.name,
-                        stopIndex: i
+                        stopIndex: i,
                     })
             }
         }
@@ -41,7 +41,7 @@ export class TravelGraph {
         const possiblePaths: { pos: string, hops: Neighbour[], distanceTravelled: number }[] = [{
             pos: from,
             hops: [],
-            distanceTravelled: 0
+            distanceTravelled: 0,
         }]
         while (possiblePaths.length > 0) {
             const path = possiblePaths.shift()!!
@@ -59,7 +59,7 @@ export class TravelGraph {
                 possiblePaths.push({
                     pos: neighbour.cityName,
                     hops,
-                    distanceTravelled: path.distanceTravelled + neighbour.distance
+                    distanceTravelled: path.distanceTravelled + neighbour.distance,
                 })
             }
         }
@@ -85,7 +85,7 @@ export class TravelGraph {
                 segments.push({
                     lineName: currentNeigh.lineName,
                     stopIndex: currentNeigh.stopIndex,
-                    destination: neighbours[i - 1].cityName
+                    destination: neighbours[i - 1].cityName,
                 })
                 currentI = i
             }
@@ -93,7 +93,7 @@ export class TravelGraph {
         segments.push({
             lineName: neighbours[currentI].lineName,
             stopIndex: neighbours[currentI].stopIndex,
-            destination: neighbours[neighbours.length - 1].cityName
+            destination: neighbours[neighbours.length - 1].cityName,
         })
         return segments
     }

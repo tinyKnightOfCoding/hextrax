@@ -1,10 +1,10 @@
-import {AbstractMesh, ActionManager, Node, Scene, TransformNode, Vector3} from "@babylonjs/core";
-import {HexagonTile} from "./HexagonTile";
-import {Direction} from "../Direction";
-import {City} from "../City";
-import {PlaneTile} from "./PlaneTile";
-import {StationTile} from "./StationTile";
-import {Track, TrackGraph} from "../track";
+import {AbstractMesh, ActionManager, Node, Scene, TransformNode, Vector3} from '@babylonjs/core'
+import {HexagonTile} from './HexagonTile'
+import {Direction} from '../Direction'
+import {City} from '../City'
+import {PlaneTile} from './PlaneTile'
+import {StationTile} from './StationTile'
+import {Track, TrackGraph} from '../track'
 
 export class HexagonGrid {
 
@@ -16,7 +16,7 @@ export class HexagonGrid {
                 private readonly tileActionManager: ActionManager,
                 private readonly trackActionManager: ActionManager,
     ) {
-        this.gridNode = new TransformNode("grid-node", scene)
+        this.gridNode = new TransformNode('grid-node', scene)
     }
 
     createTile(q: number, r: number) {
@@ -36,7 +36,7 @@ export class HexagonGrid {
     }
 
     placeTrack(q: number, r: number, from: Direction, to: Direction, station?: City): void {
-        const newTrack = this.findTile(q, r)?.addTrack(from, to, this.trackActionManager, !!station, station);
+        const newTrack = this.findTile(q, r)?.addTrack(from, to, this.trackActionManager, !!station, station)
         if (!newTrack) {
             return
         }
@@ -47,17 +47,8 @@ export class HexagonGrid {
         (this.findNeighbourTile(q, r, to)?.tracksByDirection(to.opposite) ?? []).forEach((t: Track) => {
             t.addNeighbour(newTrack, to.opposite)
             newTrack.addNeighbour(t, to)
-        });
+        })
         this.trackGraph.afterTrackAdded(newTrack)
-    }
-
-    removeTrack(track: Track) {
-        const tile = this.tileByName(track.parent.name)
-        tile.removeTrack(track)
-        this.findNeighbourTile(tile.q, tile.r, track.from)?.tracksByDirection(track.from.opposite)?.forEach(t => t.removeNeighbour(track))
-        this.findNeighbourTile(tile.q, tile.r, track.to)?.tracksByDirection(track.to.opposite)?.forEach(t => t.removeNeighbour(track))
-        track.dispose()
-        this.trackGraph.afterTrackRemoved(track)
     }
 
     trackByMesh(mesh: AbstractMesh): Track {
@@ -88,7 +79,7 @@ export class HexagonGrid {
                 return tile.city
             }
         }
-        throw new Error("city not found")
+        throw new Error('city not found')
     }
 
     private convert(q: number, r: number): Vector3 {
