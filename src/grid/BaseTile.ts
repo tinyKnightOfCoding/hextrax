@@ -1,7 +1,7 @@
 import {AbstractMesh, ActionManager, Mesh, Vector3} from '@babylonjs/core'
 import {HexagonTile} from './HexagonTile'
 import {Track} from '../track'
-import {Direction} from '../Direction'
+import {Direction} from './Direction'
 import {City} from '../City'
 
 export abstract class BaseTile implements HexagonTile {

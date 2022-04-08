@@ -1,5 +1,5 @@
 import {AbstractMesh, Mesh, MeshBuilder, Node, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
-import {Direction} from "../Direction";
+import {Direction} from "../grid";
 import {defaultTrackObjectOptions, TrackObjectOptions} from "./TrackObjectOptions";
 
 export class TrackObject {

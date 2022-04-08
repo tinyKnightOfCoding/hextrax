@@ -1,6 +1,6 @@
 import {AbstractMesh, ActionManager, Mesh, Vector3} from '@babylonjs/core'
 import {City} from '../City'
-import {Direction} from '../Direction'
+import {Direction} from './Direction'
 import {Track} from '../track'
 
 export interface HexagonTile {

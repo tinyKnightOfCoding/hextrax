@@ -1,5 +1,5 @@
 import {TrackObject} from '../track'
-import {Direction} from '../Direction'
+import {Direction} from '../grid'
 import {HexagonGrid, HexagonTile} from '../grid'
 import {Color3, Scene} from '@babylonjs/core'
 import {BaseEditState} from './BaseEditState'

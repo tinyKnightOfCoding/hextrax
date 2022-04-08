@@ -1,6 +1,6 @@
 import {AbstractMesh, ActionManager, Node, Scene, TransformNode, Vector3} from '@babylonjs/core'
 import {HexagonTile} from './HexagonTile'
-import {Direction} from '../Direction'
+import {Direction} from './Direction'
 import {City} from '../City'
 import {PlaneTile} from './PlaneTile'
 import {StationTile} from './StationTile'

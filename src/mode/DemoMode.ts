@@ -1,5 +1,5 @@
 import {Simulation} from '../Simulation'
-import {Direction} from '../Direction'
+import {Direction} from '../grid'
 import {RailwayLine} from '../line'
 import {TravelGraph} from '../passenger'
 import {Demand} from '../passenger'

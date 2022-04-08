@@ -1,4 +1,4 @@
-import {Direction} from "../Direction";
+import {Direction} from "../grid";
 import {AbstractMesh, Mesh, Scene, Vector3} from "@babylonjs/core";
 import {TrackObject} from "./TrackObject";
 import {TrackObjectOptions} from "./TrackObjectOptions";
