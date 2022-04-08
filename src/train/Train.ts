@@ -1,7 +1,7 @@
 import {RailwayLine, Waypoint} from '../line'
 import {Mesh, MeshBuilder, Scene, StandardMaterial, Vector3} from '@babylonjs/core'
 import {AdvancedDynamicTexture, Control, Rectangle, TextBlock} from '@babylonjs/gui'
-import {Passenger} from '../passenger/Passenger'
+import {Passenger} from '../passenger'
 import {Simulation} from '../Simulation'
 
 type TrainState = 'STOP' | 'TRAVEL'
@@ -16,6 +16,7 @@ export class Train {
     private state: TrainState = 'TRAVEL'
     private stopDuration = 0
     private passengers: Passenger[] = []
+    private readonly capacity = 50
     private readonly nameText: TextBlock
     private stopIndex = 0
 
@@ -33,7 +34,7 @@ export class Train {
         this.body.material = mat
         const nameTag = new Rectangle()
         advancedTexture.addControl(nameTag)
-        nameTag.width = '80px'
+        nameTag.width = '120px'
         nameTag.height = '30px'
         nameTag.thickness = 2
         nameTag.linkOffsetY = '-30px'
@@ -43,7 +44,7 @@ export class Train {
         nameTag.background = 'black'
         nameTag.linkWithMesh(this.body)
         this.nameText = new TextBlock()
-        this.nameText.text = `${this.name} (${this.passengers.length})`
+        this.nameText.text = `${this.name} (${this.passengers.length} / ${this.capacity})`
         this.nameText.color = 'white'
         this.nameText.fontSize = '18'
         this.nameText.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
@@ -56,13 +57,13 @@ export class Train {
         if (this.state === 'STOP') {
             if (this.stopDuration === 0) {
                 this.deboardPassengers()
-                this.nameText.text = `${this.name} (${this.passengers.length})`
+                this.nameText.text = `${this.name} (${this.passengers.length} / ${this.capacity})`
             }
             this.stopDuration += delta
             if (this.stopDuration > 1000) {
                 this.stopDuration = 0
                 this.boardPassengers()
-                this.nameText.text = `${this.name} (${this.passengers.length})`
+                this.nameText.text = `${this.name} (${this.passengers.length} / ${this.capacity})`
                 this.state = 'TRAVEL'
                 this.stopIndex++
             }
@@ -91,12 +92,12 @@ export class Train {
     }
 
     private boardPassengers() {
-        if(this.lineLength < this.line.waypoints.length) {
+        if (this.lineLength < this.line.waypoints.length) {
             // current is outdated, do not board any passenger
             return
         }
         const city = this.simulation.cityByName(this.remainingWaypoints[0]!!.stopName!!)
-        const boardingPassagers = city.getAndRemovePassengers(this.line.name, this.stopIndex)
+        const boardingPassagers = city.getAndRemovePassengers(this.line.name, this.stopIndex, this.capacity - this.passengers.length)
         boardingPassagers.forEach(p => p.board())
         this.passengers.push(...boardingPassagers)
     }

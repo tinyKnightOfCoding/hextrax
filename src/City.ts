@@ -46,9 +46,13 @@ export class City {
         this.nameTag.text = `${this.name} (${this.passengers.length})`
     }
 
-    getAndRemovePassengers(lineName: string, stopIndex: number): Passenger[] {
-        const remainingPassengers = this.passengers.filter(p => !p.wantsBoard(lineName, stopIndex))
-        const leavingPassengers = this.passengers.filter(p => p.wantsBoard(lineName, stopIndex))
+    getAndRemovePassengers(lineName: string, stopIndex: number, max: number): Passenger[] {
+        let remainingPassengers = this.passengers.filter(p => !p.wantsBoard(lineName, stopIndex))
+        let leavingPassengers = this.passengers.filter(p => p.wantsBoard(lineName, stopIndex))
+        if(leavingPassengers.length > max) {
+            remainingPassengers = [...remainingPassengers, ...leavingPassengers.slice(max, leavingPassengers.length)]
+            leavingPassengers = leavingPassengers.slice(0, max)
+        }
         this.passengers = remainingPassengers
         this.nameTag.text = `${this.name} (${this.passengers.length})`
         return leavingPassengers
