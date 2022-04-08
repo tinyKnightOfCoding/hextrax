@@ -10,6 +10,7 @@ export class Clock {
     private weeks: number = 1
     private realtimePassedCurrentHour: number = 0
     private readonly textBlock: TextBlock
+    private readonly realtimeHistory: number[] = []
 
     constructor(advancedTexture: AdvancedDynamicTexture) {
         this.textBlock = new TextBlock()
@@ -25,7 +26,7 @@ export class Clock {
         advancedTexture.addControl(this.textBlock)
     }
 
-    passTime(realtimeInMs: number) {
+    passTime(realtimeInMs: number, fps: number) {
         this.realtimePassedCurrentHour += realtimeInMs
         if (this.realtimePassedCurrentHour >= REALTIME_MS_PER_HOUR) {
             this.hours++
@@ -39,6 +40,15 @@ export class Clock {
             this.days -= 7
             this.weeks++
         }
-        this.textBlock.text = `hour ${this.hours}, day ${this.days}, week ${this.weeks}`
+        this.realtimeHistory.push(realtimeInMs)
+        while (this.realtimeHistory.length > 30) {
+            this.realtimeHistory.shift()
+        }
+        this.textBlock.text = `hour ${this.hours}, day ${this.days}, week ${this.weeks} | ${this.realtimeAvg} | ${Math.ceil(fps)}`
+    }
+
+    get realtimeAvg(): number {
+        const sum = this.realtimeHistory.reduce((a, b) => a + b, 0)
+        return Math.ceil(sum / this.realtimeHistory.length)
     }
 }

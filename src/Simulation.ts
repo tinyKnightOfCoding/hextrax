@@ -80,7 +80,7 @@ export class Simulation {
 
     start() {
         this.engine.runRenderLoop(() => {
-            this.clock.passTime(this.engine.getDeltaTime())
+            this.clock.passTime(this.engine.getDeltaTime(), this.engine.getFps())
             this.trains.forEach(t => t.update(this.engine.getDeltaTime()))
             this.demands.forEach(d => d.update(this.engine.getDeltaTime()))
             this.scene.render()
