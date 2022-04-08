@@ -16,7 +16,7 @@ export class Train {
     private state: TrainState = 'TRAVEL'
     private stopDuration = 0
     private passengers: Passenger[] = []
-    private readonly capacity = 50
+    private readonly capacity = 25
     private readonly nameText: TextBlock
     private stopIndex = 0
 

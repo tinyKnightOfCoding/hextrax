@@ -1,4 +1,5 @@
 import {AdvancedDynamicTexture, Control, TextBlock} from '@babylonjs/gui'
+import {ClockWatcher} from './ClockWatcher'
 
 
 const REALTIME_MS_PER_HOUR = 1_000
@@ -11,6 +12,7 @@ export class Clock {
     private realtimePassedCurrentHour: number = 0
     private readonly textBlock: TextBlock
     private readonly realtimeHistory: number[] = []
+    private readonly watchers: ClockWatcher[] = []
 
     constructor(advancedTexture: AdvancedDynamicTexture) {
         this.textBlock = new TextBlock()
@@ -30,15 +32,18 @@ export class Clock {
         this.realtimePassedCurrentHour += realtimeInMs
         if (this.realtimePassedCurrentHour >= REALTIME_MS_PER_HOUR) {
             this.hours++
+            this.watchers.forEach(w => w.newHour())
             this.realtimePassedCurrentHour -= REALTIME_MS_PER_HOUR
         }
         if (this.hours >= 24) {
             this.days++
+            this.watchers.forEach(w => w.newDay())
             this.hours -= 24
         }
         if (this.days > 7) {
             this.days -= 7
             this.weeks++
+            this.watchers.forEach(w => w.newWeek())
         }
         this.realtimeHistory.push(realtimeInMs)
         while (this.realtimeHistory.length > 30) {
@@ -50,5 +55,9 @@ export class Clock {
     get realtimeAvg(): number {
         const sum = this.realtimeHistory.reduce((a, b) => a + b, 0)
         return Math.ceil(sum / this.realtimeHistory.length)
+    }
+
+    register(watcher: ClockWatcher) {
+        this.watchers.push(watcher)
     }
 }

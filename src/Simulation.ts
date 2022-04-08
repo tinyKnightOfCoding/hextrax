@@ -10,8 +10,9 @@ import {Demand, TravelGraph} from './passenger'
 import {Controls} from './controls'
 import {TrackGraph} from './track'
 import {Inventory} from './inventory'
+import {ClockWatcher} from './ClockWatcher'
 
-export class Simulation {
+export class Simulation implements ClockWatcher {
 
     private readonly engine: Engine
     readonly scene: Scene
@@ -20,6 +21,7 @@ export class Simulation {
     private readonly ui: AdvancedDynamicTexture
     private passengerCount = 0
     private readonly passengerCountText: TextBlock
+    private readonly overflowText: TextBlock
     private readonly trains: Train[] = []
     private readonly demands: Demand[] = []
     private readonly _lines: RailwayLine[] = []
@@ -29,6 +31,10 @@ export class Simulation {
     readonly inventory: Inventory
     // @ts-ignore
     private readonly controls: Controls
+    private overflowIndex = 0
+    private overflowCooldown = 2
+    private overflowMax = 50
+    private readonly cities: City[] = []
 
     constructor(element: HTMLCanvasElement) {
         this.engine = new Engine(element, true)
@@ -42,6 +48,7 @@ export class Simulation {
         this.ui = AdvancedDynamicTexture.CreateFullscreenUI('UI')
         this.ui.useInvalidateRectOptimization = false
         this.clock = new Clock(this.ui)
+        this.clock.register(this)
 
         this.tileActionManager = new ActionManager(this.scene)
         this.trackActionManager = new ActionManager(this.scene)
@@ -61,6 +68,17 @@ export class Simulation {
         this.passengerCountText.left = '8px'
         this.passengerCountText.resizeToFit = true
         this.ui.addControl(this.passengerCountText)
+        this.overflowText = new TextBlock()
+        this.overflowText.text = `overflow: ${this.overflowIndex} / ${this.overflowMax}`
+        this.overflowText.color = 'white'
+        this.overflowText.fontSize = '20px'
+        this.overflowText.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
+        this.overflowText.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT
+        this.overflowText.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
+        this.overflowText.top = '30px'
+        this.overflowText.left = '500px'
+        this.overflowText.resizeToFit = true
+        this.ui.addControl(this.overflowText)
         this.travelGraph = new TravelGraph(this)
     }
 
@@ -82,12 +100,17 @@ export class Simulation {
     }
 
     start() {
-        this.engine.runRenderLoop(() => {
-            this.clock.passTime(this.engine.getDeltaTime(), this.engine.getFps())
-            this.trains.forEach(t => t.update(this.engine.getDeltaTime()))
-            this.demands.forEach(d => d.update(this.engine.getDeltaTime()))
-            this.scene.render()
-        })
+        this.engine.runRenderLoop(() => this.renderLoop())
+    }
+
+    private renderLoop() {
+        this.clock.passTime(this.engine.getDeltaTime(), this.engine.getFps())
+        this.trains.forEach(t => t.update(this.engine.getDeltaTime()))
+        this.demands.forEach(d => d.update(this.engine.getDeltaTime()))
+        if(this.overflowIndex >= this.overflowMax) {
+            this.engine.stopRenderLoop()
+        }
+        this.scene.render()
     }
 
     createTile(q: number, r: number) {
@@ -97,6 +120,7 @@ export class Simulation {
     placeCity(q: number, r: number, name: string, from: Direction, to: Direction): City {
         const city = new City(name, this, this.ui)
         this.grid.createCityTile(q, r, city, from, to)
+        this.cities.push(city)
         return city
     }
 
@@ -134,5 +158,24 @@ export class Simulation {
         camera.upperBetaLimit = Math.PI / 2 - 0.1
         camera.panningAxis = new Vector3(1, 0, 1)
         camera.attachControl(element, true)
+    }
+
+    newDay(): void {
+    }
+
+    newHour(): void {
+        const overflowingCityCount = this.cities.filter(c => c.isOverflowing).length
+        if(overflowingCityCount > 0) {
+            this.overflowIndex += overflowingCityCount
+        } else {
+            this.overflowIndex -= this.overflowCooldown
+            if(this.overflowIndex < 0 ) {
+                this.overflowIndex = 0
+            }
+        }
+        this.overflowText.text = `overflow: ${this.overflowIndex} / ${this.overflowMax}`
+    }
+
+    newWeek(): void {
     }
 }
