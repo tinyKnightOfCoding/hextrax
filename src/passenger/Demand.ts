@@ -1,20 +1,21 @@
 import {City} from "../City";
 import {Passenger} from "./Passenger";
-import {Segment} from "./TravelGraph";
+import {Simulation} from '../Simulation'
 
 export class Demand {
 
     private timePassed = 0
 
-    constructor(readonly city: City,
-                readonly path: Segment[],
+    constructor(readonly origin: City,
+                readonly destination: City,
+                readonly sim: Simulation,
                 readonly rate: number = 1000) {
     }
 
     update(delta: number) {
         this.timePassed += delta
         if(this.timePassed >= this.rate) {
-            this.city.addPassenger(new Passenger(this.path))
+            this.origin.addPassenger(new Passenger(this.origin, this.destination, this.sim))
             this.timePassed -= this.rate
         }
     }

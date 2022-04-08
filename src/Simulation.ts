@@ -6,7 +6,7 @@ import {City} from './City'
 import {Direction} from './grid'
 import {Train} from './train'
 import {RailwayLine} from './line'
-import {Demand} from './passenger'
+import {Demand, TravelGraph} from './passenger'
 import {Controls} from './controls'
 import {TrackGraph} from './track'
 import {Inventory} from './inventory'
@@ -25,6 +25,7 @@ export class Simulation {
     private readonly _lines: RailwayLine[] = []
     readonly tileActionManager: ActionManager
     readonly trackActionManager: ActionManager
+    readonly travelGraph: TravelGraph
     readonly inventory: Inventory
     // @ts-ignore
     private readonly controls: Controls
@@ -60,6 +61,7 @@ export class Simulation {
         this.passengerCountText.left = '8px'
         this.passengerCountText.resizeToFit = true
         this.ui.addControl(this.passengerCountText)
+        this.travelGraph = new TravelGraph(this)
     }
 
     get lines(): RailwayLine[] {
@@ -72,6 +74,7 @@ export class Simulation {
 
     addLine(line: RailwayLine) {
         this._lines.push(line)
+        this.travelGraph.updateNeighbours()
     }
 
     get trainCount() {
@@ -99,6 +102,7 @@ export class Simulation {
 
     placeTrack(q: number, r: number, from: Direction, to: Direction) {
         this.grid.placeTrack(q, r, from, to)
+        this.travelGraph.updateNeighbours()
     }
 
     placeTrain(name: string, line: RailwayLine) {

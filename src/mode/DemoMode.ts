@@ -1,7 +1,6 @@
 import {Simulation} from '../Simulation'
 import {Direction} from '../grid'
 import {RailwayLine} from '../line'
-import {TravelGraph} from '../passenger'
 import {Demand} from '../passenger'
 import {Color3} from '@babylonjs/core'
 
@@ -38,17 +37,17 @@ export function demoMode(simulation: Simulation) {
     simulation.placeTrack(1, 3, Direction.WEST, Direction.EAST)
     simulation.placeTrack(2, 3, Direction.WEST, Direction.EAST)
 
-    const line = new RailwayLine('murten-biel-solothurn', Color3.Red(), simulation.trackGraph)
+    const line = new RailwayLine('murten-biel-solothurn', Color3.Red(), simulation.trackGraph, simulation.travelGraph)
     line.addStopAt(murten)
     line.addStopAt(biel)
     line.addStopAt(solothurn)
 
-    const line2 = new RailwayLine('solothurn-bern-thun', Color3.Green(), simulation.trackGraph)
+    const line2 = new RailwayLine('solothurn-bern-thun', Color3.Green(), simulation.trackGraph, simulation.travelGraph)
     line2.addStopAt(solothurn)
     line2.addStopAt(bern)
     line2.addStopAt(thun)
 
-    const line3 = new RailwayLine('fribourg-bern', Color3.Blue(), simulation.trackGraph)
+    const line3 = new RailwayLine('fribourg-bern', Color3.Blue(), simulation.trackGraph, simulation.travelGraph)
     line3.addStopAt(fribourg)
     line3.addStopAt(bern)
 
@@ -60,8 +59,7 @@ export function demoMode(simulation: Simulation) {
     simulation.placeTrain('RE', line2)
     simulation.placeTrain('S1', line3)
 
-    const travelGraph = new TravelGraph(line, line2, line3)
-    simulation.addDemand(new Demand(simulation.cityByName('Murten'), travelGraph.findRoute('Murten', 'Thun'), 1500))
-    simulation.addDemand(new Demand(simulation.cityByName('Fribourg'), travelGraph.findRoute('Fribourg', 'Thun'), 2000))
-    simulation.addDemand(new Demand(simulation.cityByName('Bern'), travelGraph.findRoute('Bern', 'Biel'), 1000))
+    simulation.addDemand(new Demand(murten, thun, simulation, 1500))
+    simulation.addDemand(new Demand(fribourg, thun, simulation, 2000))
+    simulation.addDemand(new Demand(bern, biel, simulation, 1000))
 }

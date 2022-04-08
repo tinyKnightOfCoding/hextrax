@@ -1,4 +1,6 @@
-import {RailwayLine, Waypoint} from '../line'
+import {Waypoint} from '../line'
+import {Simulation} from '../Simulation'
+import {Passenger} from './Passenger'
 
 interface Neighbour {
     cityName: string,
@@ -17,9 +19,14 @@ export interface Segment {
 export class TravelGraph {
 
     private readonly neighbours: { [key: string]: Neighbour[] } = {}
+    private passengers: Passenger[] = []
 
-    constructor(...lines: RailwayLine[]) {
-        for (const line of lines) {
+    constructor(private readonly sim: Simulation) {
+        this.updateNeighbours()
+    }
+
+    updateNeighbours() {
+        for (const line of this.sim.lines) {
             const stops = line.waypoints.map((v, i) => [v, i] as [Waypoint, number]).filter(([v, _]) => v.stopName)
             for (let i = 0; i < stops.length - 1; i++) {
                 const currentStop = stops[i]
@@ -33,6 +40,18 @@ export class TravelGraph {
                         stopIndex: i,
                     })
             }
+        }
+        this.passengers.forEach(p => p.notify())
+    }
+
+    register(p: Passenger) {
+        this.passengers.push(p)
+    }
+
+    unregister(p: Passenger) {
+        const i = this.passengers.indexOf(p)
+        if (i >= 0) {
+            this.passengers.splice(i, 1)
         }
     }
 

@@ -1,30 +1,56 @@
-import {Segment} from "./TravelGraph";
-import {City} from "../City";
+import {City} from '../City'
+import {Simulation} from '../Simulation'
+import {Segment} from './TravelGraph'
 
 export class Passenger {
 
-    private currentSegmentIndex = 0
+    private state: 'TRAIN' | 'CITY' = 'CITY'
+    private lastStop: City
+    private currentPlan: Segment[] = []
 
-    constructor(private readonly segments: Segment[]) {
+    constructor(origin: City,
+                private readonly destination: City,
+                private readonly sim: Simulation,
+    ) {
+        this.lastStop = origin
+        this.currentPlan = this.sim.travelGraph.findRoute(origin.name, destination.name)
+        this.sim.travelGraph.register(this)
     }
 
     private get currentSegment(): Segment {
-        return this.segments[this.currentSegmentIndex]
+        return this.currentPlan[0]
     }
 
     wantsBoard(lineName: string, stopIndex: number): boolean {
-        return this.currentSegment.stopIndex === stopIndex && this.currentSegment.lineName === lineName
+        return this.currentSegment && this.currentSegment.stopIndex === stopIndex && this.currentSegment.lineName === lineName
     }
 
     wantsDeboard(city: City): boolean {
         return this.currentSegment.destination === city.name
     }
 
-    deboard() {
-        this.currentSegmentIndex++
+    board() {
+        this.state = 'TRAIN'
+    }
+
+    deboard(city: City) {
+        this.lastStop = city
+        this.state = 'CITY'
+        if (this.lastStop.name !== this.destination.name)
+            this.currentPlan = this.sim.travelGraph.findRoute(this.lastStop.name, this.destination.name)
+    }
+
+    notify() {
+        if (this.state === 'CITY') {
+            this.currentPlan = this.sim.travelGraph.findRoute(this.lastStop.name, this.destination.name)
+        }
+    }
+
+    dispose() {
+        this.sim.travelGraph.unregister(this)
     }
 
     get reachedDestination(): boolean {
-        return this.currentSegmentIndex === this.segments.length
+        return this.destination.name === this.lastStop.name
     }
 }

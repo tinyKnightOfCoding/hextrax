@@ -41,6 +41,7 @@ export class City {
     addPassengers(...passengers: Passenger[]) {
         const rp = passengers.filter(p => !p.reachedDestination)
         this.passengers.push(...rp)
+        rp.forEach(p => p.dispose())
         this.simulation.incrementPassengerCount(passengers.length - rp.length)
         this.nameTag.text = `${this.name} (${this.passengers.length})`
     }

@@ -10,6 +10,7 @@ export class Train {
 
     private readonly body: Mesh
     private remainingWaypoints: Waypoint[] = []
+    private lineLength: number = 0
     private velocity: number = 0.75
     private distanceTravelledOnCurrentSegment: number = 0
     private state: TrainState = 'TRAVEL'
@@ -85,17 +86,24 @@ export class Train {
         const remainingPassengers = this.passengers.filter(p => !p.wantsDeboard(city))
         const leavingPassengers = this.passengers.filter(p => p.wantsDeboard(city))
         this.passengers = remainingPassengers
-        leavingPassengers.forEach(p => p.deboard())
+        leavingPassengers.forEach(p => p.deboard(city))
         city.addPassengers(...leavingPassengers)
     }
 
     private boardPassengers() {
+        if(this.lineLength < this.line.waypoints.length) {
+            // current is outdated, do not board any passenger
+            return
+        }
         const city = this.simulation.cityByName(this.remainingWaypoints[0]!!.stopName!!)
-        this.passengers.push(...city.getAndRemovePassengers(this.line.name, this.stopIndex))
+        const boardingPassagers = city.getAndRemovePassengers(this.line.name, this.stopIndex)
+        boardingPassagers.forEach(p => p.board())
+        this.passengers.push(...boardingPassagers)
     }
 
     private setWaypoints() {
         this.remainingWaypoints = this.line.waypoints
+        this.lineLength = this.remainingWaypoints.length
         this.stopIndex = 0
         this.body.position = this.remainingWaypoints[0]!!.coordinate.clone()
         if (this.remainingWaypoints[0]!!.stopName) {
