@@ -11,6 +11,7 @@ import {Controls} from './controls'
 import {TrackGraph} from './track'
 import {Inventory} from './inventory'
 import {ClockWatcher} from './ClockWatcher'
+import {Milestone} from './milestone'
 
 export class Simulation implements ClockWatcher {
 
@@ -35,6 +36,7 @@ export class Simulation implements ClockWatcher {
     private overflowCooldown = 2
     private overflowMax = 50
     private readonly cities: City[] = []
+    private readonly milestones: Milestone[] = []
 
     constructor(element: HTMLCanvasElement) {
         this.engine = new Engine(element, true)
@@ -58,7 +60,7 @@ export class Simulation implements ClockWatcher {
         this.inventory = new Inventory(this.ui)
 
         this.passengerCountText = new TextBlock()
-        this.passengerCountText.text = `passengers transported: ${this.passengerCount}`
+        this.passengerCountText.text = `passengers transported: ${this.passengerCount} of ${this.milestones[0]?.passengerThreshold}`
         this.passengerCountText.color = 'white'
         this.passengerCountText.fontSize = '20px'
         this.passengerCountText.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
@@ -107,10 +109,14 @@ export class Simulation implements ClockWatcher {
         this.clock.passTime(this.engine.getDeltaTime(), this.engine.getFps())
         this.trains.forEach(t => t.update(this.engine.getDeltaTime()))
         this.demands.forEach(d => d.update(this.engine.getDeltaTime()))
-        if(this.overflowIndex >= this.overflowMax) {
+        this.scene.render()
+        if (this.overflowIndex >= this.overflowMax || this.milestones.length === 0) {
             this.engine.stopRenderLoop()
         }
-        this.scene.render()
+        if (this.milestones[0] && this.milestones[0].passengerThreshold <= this.passengerCount) {
+            const m = this.milestones.shift()!!
+            m.setup(this)
+        }
     }
 
     createTile(q: number, r: number) {
@@ -143,7 +149,7 @@ export class Simulation implements ClockWatcher {
 
     incrementPassengerCount(amount: number) {
         this.passengerCount += amount
-        this.passengerCountText.text = `passengers transported: ${this.passengerCount}`
+        this.passengerCountText.text = `passengers transported: ${this.passengerCount} of ${this.milestones[0]?.passengerThreshold}`
     }
 
     private createLighting() {
@@ -165,11 +171,11 @@ export class Simulation implements ClockWatcher {
 
     newHour(): void {
         const overflowingCityCount = this.cities.filter(c => c.isOverflowing).length
-        if(overflowingCityCount > 0) {
+        if (overflowingCityCount > 0) {
             this.overflowIndex += overflowingCityCount
         } else {
             this.overflowIndex -= this.overflowCooldown
-            if(this.overflowIndex < 0 ) {
+            if (this.overflowIndex < 0) {
                 this.overflowIndex = 0
             }
         }
@@ -177,5 +183,10 @@ export class Simulation implements ClockWatcher {
     }
 
     newWeek(): void {
+    }
+
+    addMilestone(m: Milestone) {
+        this.milestones.push(m)
+        this.passengerCountText.text = `passengers transported: ${this.passengerCount} of ${this.milestones[0]?.passengerThreshold}`
     }
 }

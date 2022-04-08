@@ -3,6 +3,7 @@ import {Direction} from '../grid'
 import {RailwayLine} from '../line'
 import {Color3} from '@babylonjs/core'
 import {Demand} from '../passenger'
+import {Milestone} from '../milestone'
 
 export function defaultMode(simulation: Simulation) {
     const murten = simulation.placeCity(-4, 1, 'Murten', Direction.SOUTH_EAST, Direction.NORTH_WEST)
@@ -21,14 +22,15 @@ export function defaultMode(simulation: Simulation) {
     simulation.addLine(new RailwayLine('Line 1', Color3.Red(), simulation.trackGraph, simulation.travelGraph))
     simulation.addLine(new RailwayLine('Line 2', Color3.Green(), simulation.trackGraph, simulation.travelGraph))
 
-    simulation.inventory.addTracks(16)
+    simulation.inventory.addTracks(20)
     simulation.inventory.addTrains(3)
 
     simulation.addDemand(new Demand(murten, solothurn, simulation, 2000))
-    simulation.addDemand(new Demand(biel, bern, simulation, 1500))
-    simulation.addDemand(new Demand(thun, murten, simulation, 1500))
-    simulation.addDemand(new Demand(fribourg, biel, simulation, 1500))
-    simulation.addDemand(new Demand(solothurn, bern, simulation, 1000))
-    simulation.addDemand(new Demand(bern, thun, simulation, 1500))
+    simulation.addDemand(new Demand(biel, bern, simulation, 2000))
+    simulation.addDemand(new Demand(thun, murten, simulation, 2000))
+    simulation.addDemand(new Demand(fribourg, biel, simulation, 2000))
+    simulation.addDemand(new Demand(solothurn, bern, simulation, 2000))
+    simulation.addDemand(new Demand(bern, thun, simulation, 2000))
 
+    simulation.addMilestone(new Milestone(250))
 }
