@@ -7,7 +7,10 @@ import {BaseEditState} from './BaseEditState'
 export class LineEditState extends BaseEditState {
     highlight: Mesh[] = []
 
-    constructor(private readonly scene: Scene, private readonly line: RailwayLine, private readonly sim: Simulation) {
+    constructor(private readonly scene: Scene,
+                readonly line: RailwayLine,
+                private readonly sim: Simulation,
+    ) {
         super('LINE')
     }
 
