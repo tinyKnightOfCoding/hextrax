@@ -1,5 +1,5 @@
-import {HexagonTile} from "../grid";
-import {Track} from "../track";
+import {HexagonTile} from '../grid'
+import {Track} from '../track'
 
 export type EditStateType = 'IDLE' | 'TRACK' | 'LINE'
 

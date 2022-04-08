@@ -1,8 +1,8 @@
-import {TrackObject} from "../track";
-import {Direction} from "../Direction";
-import {HexagonGrid, HexagonTile} from "../grid";
-import {Color3, Scene} from "@babylonjs/core";
-import {BaseEditState} from "./BaseEditState";
+import {TrackObject} from '../track'
+import {Direction} from '../Direction'
+import {HexagonGrid, HexagonTile} from '../grid'
+import {Color3, Scene} from '@babylonjs/core'
+import {BaseEditState} from './BaseEditState'
 
 export class TrackEditState extends BaseEditState {
 
@@ -40,7 +40,7 @@ export class TrackEditState extends BaseEditState {
             this.currentOrientation[1],
             this.scene,
             tile.body,
-            {width: 0.11, height: 0.02, color: Color3.Blue(), alpha: 0.5}
+            {width: 0.11, height: 0.02, color: Color3.Blue(), alpha: 0.5},
         )
     }
 
@@ -71,7 +71,7 @@ export class TrackEditState extends BaseEditState {
                 this.currentOrientation[1],
                 this.scene,
                 this.currentTile?.body!!,
-                {width: 0.11, height: 0.02, color: Color3.Blue(), alpha: 0.5}
+                {width: 0.11, height: 0.02, color: Color3.Blue(), alpha: 0.5},
             )
     }
 }

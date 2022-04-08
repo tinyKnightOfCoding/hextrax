@@ -1,6 +1,6 @@
-import {EditState, EditStateType} from "./EditState";
-import {HexagonTile} from "../grid";
-import {Track} from "../track";
+import {EditState, EditStateType} from './EditState'
+import {HexagonTile} from '../grid'
+import {Track} from '../track'
 
 export class BaseEditState implements EditState {
 

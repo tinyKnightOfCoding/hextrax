@@ -1,6 +1,6 @@
-import {BaseEditState} from "./BaseEditState";
+import {BaseEditState} from './BaseEditState'
 
-export class IdleEditState extends BaseEditState{
+export class IdleEditState extends BaseEditState {
 
     static INSTANCE = new IdleEditState()
 

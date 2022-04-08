@@ -1,8 +1,8 @@
-import {RailwayLine, Waypoint} from "../line";
-import {Color3, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
-import {AdvancedDynamicTexture, Control, Rectangle, TextBlock} from "@babylonjs/gui";
-import {Passenger} from "../Passenger";
-import {Simulation} from "../Simulation";
+import {RailwayLine, Waypoint} from '../line'
+import {Mesh, MeshBuilder, Scene, StandardMaterial, Vector3} from '@babylonjs/core'
+import {AdvancedDynamicTexture, Control, Rectangle, TextBlock} from '@babylonjs/gui'
+import {Passenger} from '../Passenger'
+import {Simulation} from '../Simulation'
 
 type TrainState = 'STOP' | 'TRAVEL'
 
@@ -23,29 +23,29 @@ export class Train {
         private readonly line: RailwayLine,
         private readonly simulation: Simulation,
         scene: Scene,
-        advancedTexture: AdvancedDynamicTexture
+        advancedTexture: AdvancedDynamicTexture,
     ) {
-        const mat = new StandardMaterial("gray", scene)
+        const mat = new StandardMaterial('gray', scene)
         mat.diffuseColor = this.line.color
         mat.specularColor = this.line.color
-        this.body = MeshBuilder.CreateBox("train", {height: 0.12, width: 0.09, depth: 0.3}, scene)
+        this.body = MeshBuilder.CreateBox('train', {height: 0.12, width: 0.09, depth: 0.3}, scene)
         this.body.material = mat
         const nameTag = new Rectangle()
         advancedTexture.addControl(nameTag)
-        nameTag.width = "80px"
-        nameTag.height = "30px"
+        nameTag.width = '80px'
+        nameTag.height = '30px'
         nameTag.thickness = 2
-        nameTag.linkOffsetY = "-30px"
+        nameTag.linkOffsetY = '-30px'
         nameTag.transformCenterY = 1
         nameTag.alpha = 0.4
         nameTag.cornerRadius = 5
-        nameTag.background = "black"
+        nameTag.background = 'black'
         nameTag.linkWithMesh(this.body)
         this.nameText = new TextBlock()
         this.nameText.text = `${this.name} (${this.passengers.length})`
-        this.nameText.color = "white"
-        this.nameText.fontSize = "18"
-        this.nameText.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        this.nameText.color = 'white'
+        this.nameText.fontSize = '18'
+        this.nameText.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
         this.nameText.alpha = 1
         nameTag.addControl(this.nameText)
         this.setWaypoints()

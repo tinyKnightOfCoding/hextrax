@@ -1,8 +1,8 @@
-import {Mesh, MeshBuilder, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
-import {RailwayLine} from "../line";
-import {Simulation} from "../Simulation";
-import {Track} from "../track";
-import {BaseEditState} from "./BaseEditState";
+import {Mesh, MeshBuilder, Scene, StandardMaterial, Vector3} from '@babylonjs/core'
+import {RailwayLine} from '../line'
+import {Simulation} from '../Simulation'
+import {Track} from '../track'
+import {BaseEditState} from './BaseEditState'
 
 export class LineEditState extends BaseEditState {
     highlight: Mesh[] = []
@@ -39,10 +39,10 @@ export class LineEditState extends BaseEditState {
             mat.diffuseColor = this.line.color
             mat.specularColor = this.line.color
             mat.alpha = 0.5
-            const mesh = MeshBuilder.CreateBox("track", {
+            const mesh = MeshBuilder.CreateBox('track', {
                 width: 0.2,
                 height: 0.03,
-                depth: (Math.sqrt(3) / 2) - 0.15
+                depth: (Math.sqrt(3) / 2) - 0.15,
             }, this.scene)
             mesh.material = mat
             console.log('creating mesh')
