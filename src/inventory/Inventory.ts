@@ -25,7 +25,7 @@ export class Inventory {
         this.trainCountText.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
         this.trainCountText.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT
         this.trainCountText.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
-        this.trainCountText.top = '70'
+        this.trainCountText.top = '80px'
         this.trainCountText.left = '8px'
         this.trainCountText.resizeToFit = true
         this.trainCountText.text = `Trains remaining: ${this.trains}`
