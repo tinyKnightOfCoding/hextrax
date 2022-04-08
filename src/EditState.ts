@@ -1,8 +1,9 @@
 import {HexagonGrid, HexagonTile} from "./grid";
 import {Track, TrackObject} from "./track";
 import {Direction} from "./Direction";
-import {Color3, Scene} from "@babylonjs/core";
+import {Color3, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3} from "@babylonjs/core";
 import {RailwayLine} from "./line";
+import {Simulation} from "./Simulation";
 
 export type EditStateType = 'IDLE' | 'TRACK' | 'LINE'
 
@@ -17,7 +18,11 @@ export interface EditState {
 
     pickTrack(track: Track): void
 
-    beforeStateChange(): void
+    onDestroy(): void
+
+    onCreate(): void
+
+    onKeyup(code: string): void
 
     rightClick(): void
 }
@@ -42,7 +47,13 @@ export class IdleEditState implements EditState {
     pickTrack(_track: Track): void {
     }
 
-    beforeStateChange() {
+    onDestroy() {
+    }
+
+    onCreate() {
+    }
+
+    onKeyup(_code: string) {
     }
 
     rightClick() {
@@ -51,11 +62,47 @@ export class IdleEditState implements EditState {
 
 export class LineEditState implements EditState {
     readonly type = 'LINE'
+    highlight: Mesh[] = []
 
-    constructor(private readonly line: RailwayLine) {
+    constructor(private readonly scene: Scene, private readonly line: RailwayLine, private readonly sim: Simulation) {
     }
 
-    beforeStateChange(): void {
+    onDestroy(): void {
+        this.highlight.forEach(h => h.dispose())
+    }
+
+    onCreate() {
+        console.log('edit line ', this.line.name)
+        this.updateHighlight()
+    }
+
+    onKeyup(code: string) {
+        switch (code) {
+            case 'NumpadAdd':
+                this.sim.placeTrain('T' + (String(this.sim.trainCount + 1).padStart(3, '0')), this.line)
+                break
+        }
+    }
+
+    private updateHighlight() {
+        this.highlight.forEach(h => h.dispose())
+        this.highlight = []
+        if(this.line.waypoints.length < 2) return
+        for (let i = 0; i < (this.line.waypoints.length / 2) - 1; i++) {
+            const origin = this.line.waypoints[i].coordinate.clone()
+            const destination = this.line.waypoints[i + 1].coordinate.clone()
+            const mat = new StandardMaterial(this.line.name, this.scene)
+            mat.diffuseColor = this.line.color
+            mat.specularColor = this.line.color
+            mat.alpha = 0.5
+            const mesh = MeshBuilder.CreateBox("track", {width: 0.2, height: 0.03, depth: (Math.sqrt(3) / 2) - 0.15}, this.scene)
+            mesh.material = mat
+            console.log('creating mesh')
+            mesh.position = origin
+            mesh.lookAt(destination)
+            mesh.translate(Vector3.Forward(), Math.sqrt(3) / 4)
+            this.highlight.push(mesh)
+        }
     }
 
     enterTile(tile: HexagonTile): void {
@@ -68,11 +115,15 @@ export class LineEditState implements EditState {
     }
 
     pickTrack(track: Track): void {
+        if (track?.station) {
+            console.log('picked track ', track?.station?.name)
+            this.line.addStopAt(track.station!!)
+            this.updateHighlight()
+        }
     }
 
     rightClick(): void {
     }
-
 }
 
 export class TrackEditState implements EditState {
@@ -120,8 +171,11 @@ export class TrackEditState implements EditState {
         this.currentTile = undefined
     }
 
-    beforeStateChange() {
+    onDestroy() {
         this.currentTrack?.dispose()
+    }
+
+    onCreate() {
     }
 
     pickTile(tile: HexagonTile) {
@@ -150,5 +204,8 @@ export class TrackEditState implements EditState {
                 this.currentTile?.body!!,
                 {width: 0.11, height: 0.02, color: Color3.Blue(), alpha: 0.5}
             )
+    }
+
+    onKeyup(_code: string) {
     }
 }

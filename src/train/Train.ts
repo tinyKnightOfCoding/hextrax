@@ -26,8 +26,8 @@ export class Train {
         advancedTexture: AdvancedDynamicTexture
     ) {
         const mat = new StandardMaterial("gray", scene)
-        mat.diffuseColor = Color3.Gray()
-        mat.specularColor = Color3.Gray()
+        mat.diffuseColor = this.line.color
+        mat.specularColor = this.line.color
         this.body = MeshBuilder.CreateBox("train", {height: 0.12, width: 0.09, depth: 0.3}, scene)
         this.body.material = mat
         const nameTag = new Rectangle()

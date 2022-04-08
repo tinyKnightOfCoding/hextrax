@@ -1,5 +1,7 @@
 import {Simulation} from "../Simulation";
 import {Direction} from "../Direction";
+import {RailwayLine} from "../line";
+import {Color3} from "@babylonjs/core";
 
 export function defaultMode(simulation: Simulation) {
     simulation.placeCity(-4, 1, "Murten", Direction.SOUTH_EAST, Direction.NORTH_WEST)
@@ -14,4 +16,8 @@ export function defaultMode(simulation: Simulation) {
             simulation.createTile(q, r)
         }
     }
+
+    simulation.addLine(new RailwayLine("Line 1", Color3.Red(), simulation.trackGraph))
+    simulation.addLine(new RailwayLine("Line 2", Color3.Green(), simulation.trackGraph))
+
 }

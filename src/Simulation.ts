@@ -17,10 +17,10 @@ import {Clock} from "./Clock";
 import {HexagonGrid} from "./grid";
 import {City} from "./City";
 import {Direction} from "./Direction";
-import {Train} from "./train/Train";
-import {RailwayLine} from "./line/RailwayLine";
+import {Train} from "./train";
+import {RailwayLine} from "./line";
 import {Demand} from "./Demand";
-import {EditState, IdleEditState, TrackEditState} from "./EditState";
+import {EditState, IdleEditState, LineEditState, TrackEditState} from "./EditState";
 import {TrackGraph} from "./track";
 
 export class Simulation {
@@ -36,6 +36,7 @@ export class Simulation {
     private readonly demands: Demand[] = []
     private readonly tileActionManager: ActionManager
     private readonly trackActionManager: ActionManager
+    private readonly lines: RailwayLine[] = []
     private editState: EditState = IdleEditState.INSTANCE
 
     constructor(element: HTMLCanvasElement) {
@@ -94,15 +95,37 @@ export class Simulation {
         return this.grid.trackGraph
     }
 
+    addLine(line: RailwayLine) {
+        this.lines.push(line)
+    }
+
     private onKeyboardEvent(keyboardInfo: KeyboardInfo) {
         switch (keyboardInfo.type) {
             case KeyboardEventTypes.KEYUP:
                 switch (keyboardInfo.event.code) {
                     case "KeyT":
-                        this.editState.beforeStateChange()
+                        this.editState.onDestroy()
                         this.editState = this.editState.type === 'TRACK'
                             ? IdleEditState.INSTANCE
                             : new TrackEditState(this.scene, this.grid)
+                        this.editState.onCreate()
+                        break
+                    case "Digit1":
+                        this.editState.onDestroy()
+                        this.editState = this.editState.type === 'LINE'
+                            ? IdleEditState.INSTANCE
+                            : new LineEditState(this.scene, this.lines[0], this)
+                        this.editState.onCreate()
+                        break
+                    case "Escape":
+                        this.editState.onDestroy()
+                        this.editState = IdleEditState.INSTANCE
+                        this.editState.onCreate()
+                        break
+                    default:
+                        console.log(keyboardInfo.event.code)
+                        this.editState.onKeyup(keyboardInfo.event.code)
+                        break
                 }
         }
     }
@@ -115,6 +138,10 @@ export class Simulation {
                 }
                 break
         }
+    }
+
+    get trainCount() {
+        return this.trains.length
     }
 
     start() {

@@ -3,6 +3,7 @@ import {Direction} from "../Direction";
 import {RailwayLine} from "../line";
 import {TravelGraph} from "../TravelGraph";
 import {Demand} from "../Demand";
+import {Color3} from "@babylonjs/core";
 
 export function demoMode(simulation: Simulation) {
 
@@ -37,17 +38,17 @@ export function demoMode(simulation: Simulation) {
     simulation.placeTrack(1, 3, Direction.WEST, Direction.EAST)
     simulation.placeTrack(2, 3, Direction.WEST, Direction.EAST)
 
-    const line = new RailwayLine('murten-biel-solothurn', simulation.trackGraph)
+    const line = new RailwayLine('murten-biel-solothurn', Color3.Red(), simulation.trackGraph)
     line.addStopAt(murten)
     line.addStopAt(biel)
     line.addStopAt(solothurn)
 
-    const line2 = new RailwayLine('solothurn-bern-thun', simulation.trackGraph)
+    const line2 = new RailwayLine('solothurn-bern-thun', Color3.Blue(), simulation.trackGraph)
     line2.addStopAt(solothurn)
     line2.addStopAt(bern)
     line2.addStopAt(thun)
 
-    const line3 = new RailwayLine('fribourg-bern', simulation.trackGraph)
+    const line3 = new RailwayLine('fribourg-bern', Color3.Green(), simulation.trackGraph)
     line3.addStopAt(fribourg)
     line3.addStopAt(bern)
 
