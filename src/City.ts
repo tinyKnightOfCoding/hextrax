@@ -1,4 +1,4 @@
-import {AdvancedDynamicTexture, Control, Rectangle, TextBlock} from '@babylonjs/gui'
+import {AdvancedDynamicTexture, Rectangle, TextBlock} from '@babylonjs/gui'
 import {Mesh} from '@babylonjs/core'
 import {Demand, Passenger} from './passenger'
 import {Simulation} from './Simulation'
@@ -7,7 +7,7 @@ export class City {
 
     private passengers: Passenger[] = []
     private readonly capacity = 75
-    private readonly nameBox: Rectangle
+    readonly nameBox: Rectangle
     private readonly nameTag: TextBlock
     private readonly demands: Demand[] = []
 

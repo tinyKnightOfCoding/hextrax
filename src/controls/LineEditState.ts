@@ -32,21 +32,28 @@ export class LineEditState extends BaseEditState {
     private updateHighlight() {
         this.highlight.forEach(h => h.dispose())
         this.highlight = []
+
+        const mat = new StandardMaterial(this.line.name, this.scene)
+        mat.diffuseColor = this.line.color
+        mat.specularColor = this.line.color
+        mat.alpha = 0.5
+        for(const city of this.line.oneWayRoute) {
+            const mesh = Mesh.CreateCylinder('city-mesh', 0.3, 0.4, 0.4, 6, 1, this.scene)
+            mesh.material = mat
+            mesh.position = city.nameBox._linkedMesh?.position.clone() ?? Vector3.Zero()
+            this.highlight.push(mesh)
+        }
         if (this.line.waypoints.length < 2) return
         for (let i = 0; i < (this.line.waypoints.length / 2) - 1; i++) {
             const origin = this.line.waypoints[i].coordinate.clone()
             const destination = this.line.waypoints[i + 1].coordinate.clone()
-            const mat = new StandardMaterial(this.line.name, this.scene)
-            mat.diffuseColor = this.line.color
-            mat.specularColor = this.line.color
-            mat.alpha = 0.5
+
             const mesh = MeshBuilder.CreateBox('track', {
                 width: 0.2,
                 height: 0.03,
                 depth: (Math.sqrt(3) / 2) - 0.15,
             }, this.scene)
             mesh.material = mat
-            console.log('creating mesh')
             mesh.position = origin
             mesh.lookAt(destination)
             mesh.translate(Vector3.Forward(), Math.sqrt(3) / 4)
