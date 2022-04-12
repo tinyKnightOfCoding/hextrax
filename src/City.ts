@@ -1,6 +1,6 @@
 import {AdvancedDynamicTexture, Control, Rectangle, TextBlock} from '@babylonjs/gui'
 import {Mesh} from '@babylonjs/core'
-import {Passenger} from './passenger'
+import {Demand, Passenger} from './passenger'
 import {Simulation} from './Simulation'
 
 export class City {
@@ -9,6 +9,7 @@ export class City {
     private readonly capacity = 75
     private readonly nameBox: Rectangle
     private readonly nameTag: TextBlock
+    private readonly demands: Demand[] = []
 
     constructor(readonly name: string, private readonly simulation: Simulation, ui: AdvancedDynamicTexture) {
         this.nameBox = new Rectangle()
@@ -23,7 +24,6 @@ export class City {
         this.nameBox.background = 'black'
         this.nameTag = new TextBlock()
         this.nameTag.fontSize = '18'
-        this.nameTag.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
         this.nameTag.alpha = 1
         this.nameTag.color = 'white'
         this.updateTextBlock()
@@ -32,6 +32,22 @@ export class City {
 
     get isOverflowing(): boolean {
         return this.capacity < this.passengers.length
+    }
+
+    update(realtimeMs: number) {
+        this.demands.forEach(d => d.update(realtimeMs))
+    }
+
+    addDemand(demand: Demand) {
+        this.demands.push(demand)
+        const demandBox = new TextBlock()
+        demandBox.fontSize = '18'
+        demandBox.alpha = 1
+        demandBox.color = 'white'
+        demandBox.text = `-> ${demand.destination.name}`
+        demandBox.top = `${15 * this.demands.length}px`
+        this.nameBox.addControl(demandBox)
+        this.nameBox.height = `${30 * (this.demands.length + 1)}px`
     }
 
     setParent(mesh: Mesh) {

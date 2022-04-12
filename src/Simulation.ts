@@ -24,7 +24,6 @@ export class Simulation implements ClockWatcher {
     private readonly passengerCountText: TextBlock
     private readonly overflowText: TextBlock
     private readonly trains: Train[] = []
-    private readonly demands: Demand[] = []
     private readonly _lines: RailwayLine[] = []
     readonly tileActionManager: ActionManager
     readonly trackActionManager: ActionManager
@@ -108,7 +107,7 @@ export class Simulation implements ClockWatcher {
     private renderLoop() {
         this.clock.passTime(this.engine.getDeltaTime(), this.engine.getFps())
         this.trains.forEach(t => t.update(this.engine.getDeltaTime()))
-        this.demands.forEach(d => d.update(this.engine.getDeltaTime()))
+        this.cities.forEach(c => c.update(this.engine.getDeltaTime()))
         this.scene.render()
         if (this.overflowIndex >= this.overflowMax || this.milestones.length === 0) {
             this.engine.stopRenderLoop()
@@ -140,7 +139,7 @@ export class Simulation implements ClockWatcher {
     }
 
     addDemand(demand: Demand) {
-        this.demands.push(demand)
+        demand.origin.addDemand(demand)
     }
 
     cityByName(name: string): City {
